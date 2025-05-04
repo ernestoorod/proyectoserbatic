@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" th:href="@{/css/entrar.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <link rel="icon" type="image/png" th:href="@{/img/logo.png}">
+</head>
+<body>
+    <a href="/"><img th:src="@{/img/logonegro.png}" alt="logo" class="logo"></a>
+    <div class="auth-container">
+        <h2>Iniciar Sesión</h2>
+        <form th:action="@{/accesoUsuario}" method="post" id="loginForm" th:object="${userInfo}">
+            <input type="hidden" name="redirect" th:value="${redirect}" />
+
+            <input type="text" name="user" placeholder="Nombre de usuario" autocomplete="off"
+                   th:value="*{user}" />
+            <span id="userError" class="error-message"></span>
+
+            <div class="password-container">
+                <input type="password" name="pass" placeholder="Contraseña" autocomplete="off" id="passwordInput"
+                       th:value="*{pass}" />
+                <span id="togglePassword" class="eye-icon" data-visible="false">
+                    <img id="eyeIcon" th:src="@{/img/ojoabierto.png}" alt="ver">
+                </span>
+            </div>
+                        
+            <span id="passError" class="error-message"></span>
+
+            <div class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+            <button type="submit">Entrar</button>
+            <p class="alt-option">
+                ¿No tienes cuenta? <a th:href="@{/registro(redirect=${redirect})}">Regístrate</a>
+            </p>
+        </form>
+    </div>
+    <script th:src="@{/js/login.js}"></script>
+</body>
+</html>

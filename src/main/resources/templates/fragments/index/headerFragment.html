@@ -1,0 +1,31 @@
+<header class="top-bar" th:fragment="headerFragment">
+    <div class="left">
+        <a th:if="${session.usuarioExiste != null}" href="/">MIXO</a>
+        <a th:if="${session.usuarioExiste == null}" href="registro">CREAR CUENTA</a>
+    </div>
+  
+    <div class="center">
+        <a th:if="${session.usuarioExiste == null}" href="/">MIXO</a>
+    </div>
+  
+    <div class="right">
+        <div class="user-switch" th:if="${session.usuarioExiste != null}">
+            <span id="userName" class="user-name" onclick="revealLinks()" th:text="${session.usuarioExiste.user}">Usuario</span>
+            <div id="userLinks" class="user-links">
+                <a th:if="${session.usuarioExiste.role == 'ADMIN'}" href="/api/servicios/administracionServicios">
+                    ADMINISTRACION DE SERVICIOS
+                </a>    
+
+                <a th:href="@{/perfil(redirect='/')}">
+                    PERFIL
+                </a>
+  
+                <a href="logout">
+                    CERRAR SESIÓN
+                </a>
+            </div>
+        </div>
+        <a th:if="${session.usuarioExiste == null}" href="login">INICIAR SESIÓN</a>
+    </div>
+  </header>
+  

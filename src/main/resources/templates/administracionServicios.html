@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Administración de Servicios</title>
+    <link rel="stylesheet" th:href="@{/css/administracionservicios.css}">
+</head>
+
+<body>
+<a href="/" class="back-link">
+    <img th:src="@{/img/logonegro.png}" alt="logo">
+</a>
+
+<div class="container">
+    <h2>Administración de Servicios</h2>
+
+    <form id="formServicio" th:action="@{/api/servicios/guardar}" th:object="${servicio}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}" />
+
+        <input id="nombreServicio" type="text" th:field="*{nombre}" placeholder="Nombre del servicio" required>
+        <div id="nombreError" style="color:red;" th:text="${errorNombre}"></div>
+
+        <label>Icono:</label>
+        <input type="file" id="iconoFile" name="iconoFile" accept="image/*" />
+
+        <label>Imagen:</label>
+        <input type="file" id="portadaFile" name="portadaFile" accept="image/*" />
+
+        <label>
+            Activo:
+            <input type="checkbox" th:field="*{activo}" />
+        </label>
+
+        <button type="submit">Guardar</button>
+    </form>
+
+    <div id="mensaje" style="margin-top: 20px; font-weight: bold;"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Icono</th>
+                <th>Imagen</th>
+                <th>Activo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="servicio : ${servicios}">
+                <td th:text="${servicio.id}"></td>
+                <td th:text="${servicio.nombre}"></td>
+                <td>
+                    <img th:src="@{'/api/servicios/icono/' + ${servicio.id}}" alt="Icono" style="width: 50px; height: 50px;" />
+                </td>
+                <td>
+                    <img th:src="@{'/api/servicios/imagen/' + ${servicio.id}}" alt="Imagen" style="width: 100px; height: 50px;" />
+                </td>
+                <td th:text="${servicio.activo} ? 'Sí' : 'No'"></td>
+                <td class="actions">
+                    <a th:href="@{/api/servicios/editar/{id}(id=${servicio.id})}">Editar</a>
+                    <a th:href="@{/api/servicios/eliminar/{id}(id=${servicio.id})}">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script th:src="@{/js/administracionservicios.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/empresas/headFragment :: headFragment"></head>
+
+<body>
+
+<header th:replace="fragments/empresas/headerFragment :: headerFragment"></header>
+
+<div class="busqueda-container">
+    <h1>¿Quieres buscar alguna empresa?</h1>
+    <input class="busqueda" id="buscador" type="text" placeholder="Busca por el nombre ...">
+</div>
+
+<p id="sinResultados" class="sin-resultados" style="display: none; text-align: center; color: #666; margin-top: 1rem;">
+    No existe empresa con ese nombre
+</p>
+
+<div class="container">
+    <div class="caja" th:each="empresa : ${empresas}">
+        <a th:href="@{'/empresa?empresaID=' + ${empresa.id}}" class="info-link">
+            <img th:src="@{'/empresa/' + ${empresa.id} + '/imagen'}" alt="Imagen de empresa" />
+            <div class="informacion">
+                <h3 class="titulo" th:text="${empresa.nombre}">Nombre de la Empresa</h3>
+                <div class="horario" th:text="${empresa.estadoHorario}">Horario</div>
+            </div>
+        </a>
+        <div class="reservar">
+            <a th:if="${session.usuarioExiste != null}">
+                <button type="button" th:onclick="'redirigirAPrimerDia(' + ${empresa.id} + ')'">Reservar</button>
+            </a>
+            <a th:unless="${session.usuarioExiste != null}"
+               href="#"
+               class="disabled-link"
+               onclick="alert('Necesario iniciar sesión'); return false;">
+                <button disabled>Reservar</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div id="modalSesion" class="modal-sesion hidden">
+    <div class="modal-content">
+        <span class="close-btn" onclick="cerrarModalSesion()">&times;</span>
+        <p>Es necesario iniciar sesión para acceder al chat con la IA.</p>
+    </div>
+</div>
+
+<footer th:replace="fragments/empresas/footerFragment :: footerFragment"></footer>
+<div th:replace="fragments/empresas/scriptsFragment :: scriptsFragment"></div>
+
+</body>
+</html>

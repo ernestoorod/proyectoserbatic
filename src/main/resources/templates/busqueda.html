@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Buscar Servicios</title>
+    <link rel="stylesheet" th:href="@{/css/busqueda.css}">
+</head>
+<body>
+	<a href="/"><img th:src="@{/img/logonegro.png}" alt="logo" class="logo"></a>
+
+	<div class="auth-container">
+		<div class="title">
+			¿Qué servicio estás buscando?
+		</div>
+
+		<div class="search-container">
+			<input type="text" placeholder="Buscar peluqueros, médicos...">
+		</div>
+
+		<div class="grid" id="servicios-container"></div>  
+	</div>
+</body>
+<script th:src="@{/js/busqueda.js}"></script>
+</html>

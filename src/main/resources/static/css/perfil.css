@@ -1,0 +1,263 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    width: 70px;
+    margin: 0 auto 1.5rem;
+    display: block;
+    opacity: 0.8;
+    border-bottom: 1px solid transparent;
+}
+
+.logo:hover {
+    border-color: #000;
+}
+
+.logo img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.container {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 700px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1;
+}
+
+.container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+/* Enlace volver */
+.container > div:first-child a {
+    font-size: 16px;
+    color: black;
+    text-decoration: none;
+}
+
+.container > div:first-child a:hover {
+    text-decoration: underline;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    z-index: 1;
+}
+
+form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+    text-align: left;
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+.input-select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background: #fafafa;
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="password"]:focus {
+    border-color: #888;
+    background: #fff;
+}
+
+.full-width {
+    margin-top: 0;
+    grid-column: 1 / -1;
+}
+
+.form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+}
+
+.form-actions button.btn-black {
+    width: 100%;
+}
+
+/* Botones generales */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    min-width: 140px;
+    transition: background-color 0.3s ease, color 0.3s ease, padding 0.3s ease;
+}
+
+button.btn-black {
+    background-color: black;
+    color: white;
+}
+
+.btn-black:hover {
+    background-color: #444;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.btn-outline {
+    background-color: white;
+    border: 2px solid black;
+    color: black;
+}
+
+.btn-outline:hover {
+    background-color: #e6e6e6;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.button-group a,
+.button-group form {
+    display: inline-block;
+}
+
+.button-group button {
+    min-width: 140px;
+    font-size: 15px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.modal input[type="password"] {
+    width: 90%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.modal button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.modal button:hover {
+    background-color: #e6e6e6;
+}
+
+/* Tablas generales si existen */
+.table-container {
+    margin-top: 30px;
+    overflow-x: auto;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.styled-table th, .styled-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.styled-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.styled-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Formulario de cambiar rol */
+form select.input-select {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+form button[type="submit"] {
+    padding: 8px 16px;
+    margin-top: 0;
+    min-width: auto;
+}
+
+/* Errores debajo de inputs */
+.error {
+    color: red;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-top: 4px;
+    margin-left: 2px;
+    display: block;
+}

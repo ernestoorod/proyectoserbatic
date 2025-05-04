@@ -1,0 +1,72 @@
+/* --------- Estilo de Días --------- */
+#dias .card {
+    background-color: #f2f2f2;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#dias .card.bg-secondary.text-white {
+    background-color: #333333 !important;
+    color: white !important;
+}
+
+/* --------- Estilo de Horas --------- */
+#horas button {
+    opacity: 0.8;
+    border: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#horas .btn-success {
+    background-color: #e0e0e0 !important;
+    color: rgb(0, 0, 0) !important;
+}
+
+/* --------- Estilo del Botón Confirmar --------- */
+#confirmarBtn {
+    background-color: #333333;
+    color: #f2f2f2;
+    border: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#confirmarBtn:hover {
+    background-color: #f2f2f2;
+    color: #333333;
+    border: 1px solid #333333;
+}
+
+/* --------- Estilo Botón Confirmar desactivado --------- */
+#confirmarBtn.disabled {
+    background-color: #ccc !important;
+    color: #666 !important;
+    cursor: not-allowed;
+}
+
+/* --------- Estilo del Modal --------- */
+#modalClose {
+    background-color: #333333;
+    color: #f2f2f2;
+    border: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+  
+#modalClose:hover {
+    background-color: #f2f2f2;
+    color: #333333;
+    border: 1px solid #333333;
+}
+
+/* --------- Estilo para volver --------- */
+.volver-btn {
+    font-size: 1rem;
+    color: #333;
+    transition: color 0.3s;
+    text-decoration: none;
+}
+  
+.volver-btn:hover {
+    color: black;
+    text-decoration: underline;
+} 

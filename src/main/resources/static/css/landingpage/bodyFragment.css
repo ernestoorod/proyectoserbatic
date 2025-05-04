@@ -1,0 +1,118 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+.section {
+    height: 100vh;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+.section h2 {
+    color: white;
+    z-index: 2;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.section a {
+    font-size: 1.5rem;
+    text-decoration: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 0 transparent;
+    backdrop-filter: blur(4px);
+    margin-top: 10px;
+}
+
+.section a:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: black;
+    border-color: white;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+    transform: scale(1.05);
+}
+
+.section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.65 );
+    z-index: 1;
+}
+
+.section * {
+    position: relative;
+    z-index: 2;
+}
+
+.peluqueria {
+    background-image: url('../../img/peluquerialanding.jpg');
+}
+
+.profesora {
+    background-image: url('../../img/clasesparticulareslanding.jpg');
+}
+
+.dentista {
+    background-image: url('../../img/dentistalanding.jpg');
+}
+
+.paseadorperros {
+    background-image: url('../../img/paseadorperroslanding.jpg');
+}
+
+.flecha {
+    font-size: 2rem;
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    border: 2px solid white;
+    border-radius: 50%;
+    position: absolute;
+    transition: all 0.3s ease;
+}
+
+.flecha:hover {
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
+.abajo-derecha {
+    bottom: 100px;
+    right: 40px;
+}
+
+
+.link-servicio {
+    font-size: 1rem !important;
+    padding: 0.3rem 0.8rem !important;
+}

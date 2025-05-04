@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" th:href="@{/css/registro.css}">
+    <link rel="icon" type="image/png" th:href="@{/img/logo.png}">
+</head>
+<body>
+
+<a href="/">
+    <img th:src="@{/img/logonegro.png}" alt="Logo" class="logo">
+</a>
+
+<div class="contenedor-autenticacion">
+    <h2>Registro de Usuario</h2>
+
+    <form action="registrarUsuario" method="post" id="formularioRegistro">
+        <input type="hidden" name="redirect" th:value="${redirect}">
+
+        <div class="campo-formulario">
+            <div class="input-group">
+                <input type="text" id="nombreCompleto" name="fullName" placeholder="Nombre completo" autocomplete="name">
+                <span class="error" id="errorNombre"></span>
+            </div>
+        </div>
+
+        <div class="campo-formulario">
+            <div class="input-group">
+                <input type="text" id="usuario" name="user" placeholder="Nombre de usuario" autocomplete="username">
+                <span class="error" id="errorUsuario"></span>
+            </div>
+        </div>
+
+        <div class="campo-formulario">
+          <div class="input-group password-container">
+            <input type="password" id="contrasena" name="pass" placeholder="Contraseña" autocomplete="new-password">
+            <span class="error" id="errorContrasena"></span>
+          </div>
+        </div>
+        
+        <div class="campo-formulario">
+          <div class="input-group password-container">
+            <input type="password" id="repetirContrasena" name="repeatpass" placeholder="Repetir Contraseña" autocomplete="new-password">
+            <span class="error" id="errorRepetir"></span>
+          </div>
+        </div>
+          
+        <div class="campo-formulario">
+            <div class="input-group">
+                <input type="email" id="correo" name="email" placeholder="Correo electrónico" autocomplete="email">
+                <span class="error" id="errorCorreo"></span>
+            </div>
+        </div>
+
+        <div class="campo-formulario">
+            <div class="input-group">
+                <input type="text" id="telefono" name="phone" placeholder="Teléfono" autocomplete="tel">
+                <span class="error" id="errorTelefono"></span>
+            </div>
+        </div>
+
+        <div class="campo-formulario span-2">
+            <div class="input-group">
+                <input type="text" id="direccion" name="address" placeholder="Dirección" autocomplete="street-address">
+                <span class="error" id="errorDireccion"></span>
+            </div>
+        </div>
+
+        <div class="campo-formulario">
+            <div class="input-group">
+                <input type="text" id="pais" name="country" placeholder="País" autocomplete="country-name">
+                <span class="error" id="errorPais"></span>
+            </div>
+        </div>
+
+        <div class="campo-formulario">
+            <div class="input-group">
+                <input type="text" id="ciudad" name="city" placeholder="Ciudad" autocomplete="address-level2">
+                <span class="error" id="errorCiudad"></span>
+            </div>
+        </div>
+
+        <div class="campo-formulario span-2">
+            <button type="submit">Registrarse</button>
+        </div>
+    </form>
+</div>
+
+<script th:src="@{/js/registro.js}"></script>
+</body>
+</html>

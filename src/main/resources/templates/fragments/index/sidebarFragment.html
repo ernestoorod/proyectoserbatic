@@ -1,0 +1,11 @@
+<nav class="sidebar" th:fragment="sidebarFragment">
+    <ul>
+        <li th:each="servicio : ${servicios}"
+            th:if="${servicio.activo}" 
+            th:attr="data-servicio=${servicio.id}, data-nombre=${servicio.nombre}"
+            onclick="mostrarServicioDesdeData(this)"
+            th:text="${servicio.nombre}">
+        </li>
+        <li><a href="busqueda">Más servicios...</a></li>
+    </ul>
+</nav>

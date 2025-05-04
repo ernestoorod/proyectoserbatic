@@ -1,0 +1,22 @@
+<header th:fragment="headerFragment">
+    <div class="logo">
+        <a href="/" class="enlacelogo">
+            <span class="marca">MIXO</span>
+        </a>
+    </div>
+
+    <nav class="enlaces">
+        <a href="/servicios">Servicios</a>
+        <a href="#">En mi zona</a>
+        <a href="/sobre-nosotros">Sobre nosotros</a>
+    </nav>
+
+    <div class="cuenta" th:if="${session.usuarioExiste == null}">
+        <a href="/login" class="btn-cuenta">Iniciar sesión</a>
+    </div>
+
+    <div class="cuenta" th:if="${session.usuarioExiste != null}">
+        <span class="nombre-usuario" th:text="'Hola, ' + ${session.usuarioExiste.user}"></span>
+        <a href="/logout" class="btn-cuenta">Cerrar sesión</a>
+    </div>
+</header>

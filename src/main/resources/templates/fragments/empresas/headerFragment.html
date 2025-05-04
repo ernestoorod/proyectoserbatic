@@ -1,0 +1,46 @@
+<header class="top-bar" th:fragment="headerFragment">
+  <div class="left">
+    <span id="menuToggle" class="menu-toggle">
+
+      <a th:href="@{/chat}" 
+        th:classappend="${session.usuarioExiste == null} ? ' disabled'" 
+        th:attr="aria-disabled=${session.usuarioExiste == null}"
+        th:onclick="'return handleChatClick(event, ' + (${session.usuarioExiste == null}) + ')'" >
+        CHAT CON LA IA
+      </a>
+      <a th:href="@{'/mapa'(servicioID=${servicio.id})}">MAPA</a>
+      <a th:href="@{/busqueda}">BUSQUEDA</a>
+    </span>
+  </div>           
+
+  <div class="center">
+    <a th:href="@{'/empresas?servicioID=' + ${servicio.id}}" class="logo">MIXO</a>
+  </div>
+
+  <div class="right">
+    <a th:if="${session.usuarioExiste == null and servicio != null}"
+       th:href="@{/login(redirect='/empresas?servicioID=' + ${servicio.id})}">
+        INICIAR SESIÓN
+    </a>
+
+    <div class="user-switch" th:if="${session.usuarioExiste != null}">
+      <span id="userName" class="user-name" onclick="revealLinks()" th:text="${session.usuarioExiste.user}">Usuario</span>
+      <div id="userLinks" class="user-links">
+
+        <a th:if="${session.usuarioExiste.role == 'ADMIN' and servicio != null}"
+           th:href="@{/formularioempresa(servicioID=${servicio.id})}">
+           AÑADIR EMPRESA
+        </a>
+
+        <a th:href="@{/perfil(redirect='/empresas?servicioID=' + ${servicio.id})}">
+          PERFIL
+        </a>
+
+        <a th:href="@{'/logout'(redirect='/empresas?servicioID=' + ${servicio.id})}">
+          CERRAR SESIÓN
+        </a>
+
+      </div>
+    </div>
+  </div>
+</header>

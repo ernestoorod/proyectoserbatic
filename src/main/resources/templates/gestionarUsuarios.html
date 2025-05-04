@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gestión de Usuarios</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/perfil.css}">
+</head>
+<body>
+
+    <a class="logo" th:href="@{/}"><img th:src="@{/img/logonegro.png}" alt="logo"></a>
+
+    <div class="container">
+        <h1>Gestión de Usuarios</h1>
+
+        <div class="button-group">
+            <a th:href="@{/perfil}">
+                <button class="btn-outline" type="button">Volver al Perfil</button>
+            </a>
+        </div>
+
+        <div class="table-container">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Cambiar Rol</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${usuarios}">
+                        <td th:text="${user.Id}"></td>
+                        <td th:text="${user.fullName}"></td>
+                        <td th:text="${user.user}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.role}"></td>
+                        <td>
+                            <form th:action="@{/admin/cambiarRol}" method="post" style="display: flex; align-items: center; gap: 8px;">
+                                <input type="hidden" name="id" th:value="${user.Id}" />
+                                <select name="rol" class="input-select">
+                                    <option value="USER" th:selected="${user.role == 'USER'}">USER</option>
+                                    <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">ADMIN</option>
+                                    <option value="JEFE_EMPRESA" th:selected="${user.role == 'JEFE_EMPRESA'}">JEFE_EMPRESA</option>
+                                </select>
+                                <button class="btn-black" type="submit">Actualizar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

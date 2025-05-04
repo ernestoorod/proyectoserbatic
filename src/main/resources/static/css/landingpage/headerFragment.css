@@ -1,0 +1,104 @@
+* {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background-color: #111;
+    border-bottom: 1px solid #444;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 10;
+}
+
+.logo {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.enlacelogo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 600;
+    gap: 10px;
+}
+.cuenta{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nombre-usuario{
+    font-size: 1.2rem;
+    color: #ccc;
+    font-weight: 400;
+}
+
+.logo-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
+
+.marca {
+    letter-spacing: 2px;
+}
+
+.enlaces {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+.enlaces a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 5px 8px;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.enlaces a:hover {
+    border-bottom: 2px solid white;
+    color: #ccc;
+}
+
+.cuenta {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.btn-cuenta {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3); 
+    border-radius: 8px;
+    text-decoration: none;
+    backdrop-filter: blur(3px);
+    transition: all 0.3s ease;
+}
+
+.btn-cuenta:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #111;
+    border-color: white;
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
+    transform: scale(1.05);
+    cursor: pointer;
+}
+

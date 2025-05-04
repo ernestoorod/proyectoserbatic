@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Reservas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/perfil.css}">
+</head>
+<body>
+
+    <a class="logo" th:href="@{/}"><img th:src="@{/img/logonegro.png}" alt="logo"></a>
+
+    <div class="container">
+        <h1 th:text="${usuario.role == 'JEFE_EMPRESA'} ? 'Reservas de Todas las Empresas' : 'Mis Reservas'"></h1>
+
+        <div class="button-group">
+            <a th:href="@{/perfil}">
+                <button class="btn-outline" type="button">Volver al Perfil</button>
+            </a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(reservas)}">
+            <p th:text="${usuario.role == 'JEFE_EMPRESA'} ? 'No hay reservas registradas.' : 'No tienes reservas todavía.'"></p>
+        </div>
+
+        <div class="table-container" th:if="${not #lists.isEmpty(reservas)}">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Empresa</th>
+                        <th>Nombre completo</th>
+                        <th>Nombre de usuario</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="reserva : ${reservas}">
+                        <td th:text="${reserva.empresa.nombre}">Empresa</td>
+                        <td th:text="${reserva.usuario.fullName}">Nombre completo</td>
+                        <td th:text="${reserva.usuario.user}">Nombre de usuario</td>
+                        <td th:text="${#temporals.format(reserva.fecha, 'dd/MM/yyyy')}">Fecha</td>
+                        <td th:text="${#temporals.format(reserva.hora, 'HH:mm')}">Hora</td>
+                        <td>
+                            <form th:action="@{/api/reservas/cancelar}" method="post" style="display: flex; justify-content: center;">
+                                <input type="hidden" name="reservaId" th:value="${reserva.id}" />
+                                <button class="btn-black" type="submit">Cancelar</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

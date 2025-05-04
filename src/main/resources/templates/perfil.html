@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Perfil de Usuario</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/perfil.css}">
+</head>
+<body>
+
+    <!-- <a class="logo" th:href="@{/}"><img th:src="@{/img/logonegro.png}" alt="logo"></a> -->
+
+    <div class="container">
+        
+        <div style="text-align: left; margin-bottom: 20px;">
+            <a th:href="@{${volverUrl}}" style="text-decoration: none; color: black; font-size: 16px;">← Volver</a>
+        </div>
+
+        <h1>Perfil de Usuario</h1>
+
+        <form id="perfilForm" method="post" th:action="@{/perfil/actualizar}" th:object="${usuario}">
+            <div>
+                <label for="fullName">Nombre completo</label>
+                <input type="text" id="fullName" placeholder="Nombre completo" th:field="*{fullName}" />
+                <span class="error" id="errorNombre"></span>
+            </div>
+
+            <div>
+                <label for="user">Usuario</label>
+                <input type="text" id="user" placeholder="Usuario" th:field="*{user}" />
+                <span class="error" id="errorUsuario"></span>
+            </div>
+
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Email" th:field="*{email}" />
+                <span class="error" id="errorCorreo"></span>
+            </div>
+
+            <div>
+                <label for="phone">Teléfono</label>
+                <input type="text" id="phone" placeholder="Teléfono" th:field="*{phone}" />
+                <span class="error" id="errorTelefono"></span>
+            </div>
+
+            <div class="full-width">
+                <label for="address">Dirección</label>
+                <input type="text" id="address" placeholder="Dirección" th:field="*{address}" />
+                <span class="error" id="errorDireccion"></span>
+            </div>
+
+            <div>
+                <label for="nuevaPass">Nueva contraseña</label>
+                <input type="password" id="nuevaPass" name="nuevaPass" placeholder="Nueva contraseña" />
+                <span class="error" id="errorNuevaPass"></span>
+            </div>
+
+            <div>
+                <label for="repetirPass">Repetir nueva contraseña</label>
+                <input type="password" id="repetirPass" name="repetirPass" placeholder="Repetir nueva contraseña" />
+                <span class="error" id="errorRepetirPass"></span>
+            </div>
+
+            <input type="hidden" id="hiddenPassActual" name="passActual" />
+
+            <div class="form-actions">
+                <button class="btn-black" type="submit">Actualizar</button>
+            </div>
+        </form>
+
+        <div class="button-group">
+            <a th:href="@{/api/reservas/reservas/mias}">
+                <button class="btn-outline" type="button">Mis Reservas</button>
+            </a>
+            <a th:href="@{/admin/usuarios}" th:if="${usuario.role == 'ADMIN'}">
+                <button class="btn-outline" type="button">Usuarios</button>
+            </a>
+            <button class="btn-outline" type="button" onclick="mostrarModalEliminar()">Eliminar</button>
+        </div>
+    </div>
+
+    <!-- Modal para actualizar contraseña -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Confirmar Contraseña Actual</h2>
+            <input type="password" id="passActual" placeholder="Contraseña actual" required onkeydown="handleKeyPress(event)" />
+            <div id="errorMensaje" class="error-message" style="display: none;"></div>
+            <br>
+            <button type="button" onclick="confirmarActualizacion()">Confirmar</button>
+            <button type="button" onclick="cerrarModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Modal para eliminar cuenta -->
+    <div id="modalEliminar" class="modal">
+        <div class="modal-content">
+            <h2>¿Estás seguro de que quieres eliminar esta cuenta?</h2>
+            <button type="button" onclick="confirmarEliminacion()">Confirmar</button>
+            <button type="button" onclick="cerrarModalEliminar()">Cancelar</button>
+        </div>
+    </div>
+
+    <script th:src="@{/js/perfil.js}"></script>
+
+</body>
+</html>

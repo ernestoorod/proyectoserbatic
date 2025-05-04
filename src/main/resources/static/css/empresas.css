@@ -1,0 +1,275 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+  background-color: #f9f9f9;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: white;
+  color: #222;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.top-bar > .left,
+.top-bar > .center,
+.top-bar > .right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-bar > .left {
+  justify-content: flex-start;
+}
+
+.top-bar > .right {
+  justify-content: flex-end;
+}
+
+.top-bar a {
+  color: #333;
+  font-weight: 500;
+  text-decoration: none;
+  margin: 0 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.top-bar a:hover {
+  opacity: 0.7;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.user-links, .menu-links {
+  display: none;
+  gap: 1rem;
+}
+
+.user-switch, .menu-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 1rem;
+}
+
+.menu-toggle,
+.user-name {
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  padding: 0.3rem 0.5rem;
+  text-transform: uppercase;
+}
+
+.menu-toggle:hover,
+.user-name:hover {
+  opacity: 0.7;
+}
+
+.busqueda-container {
+  margin-top: 110px;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.busqueda-container h1 {
+  font-size: 2rem;
+  margin-bottom: 1.2rem;
+  color: #333;
+}
+
+.busqueda {
+  width: 100%;
+  max-width: 600px;
+  padding: 15px 25px;
+  border: 1px solid #ddd;
+  border-radius: 50px;
+  font-size: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.busqueda:focus {
+  outline: none;
+  border-color: #aaa;
+}
+
+#sinResultados {
+  display: none;
+  text-align: center;
+  color: #666;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.caja {
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.caja:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.caja img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 15px;
+  margin-bottom: 1rem;
+}
+
+.info-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.informacion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.reservar {
+  position: absolute;
+  bottom: 2.5rem;
+  right: 2rem;
+}
+
+.reservar button {
+  padding: 10px 20px;
+  background-color: #000000;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.reservar button:hover {
+  background-color: #ffffff;
+  border: 1px solid black;
+  color: black;
+}
+
+.custom-footer {
+  background-color: white;
+  color: #222;
+  box-shadow: 0 -10px 30px -10px rgba(0, 0, 0, 0.15);
+}
+
+.disabled-link {
+  pointer-events: none;
+}
+
+.disabled-link button {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  border: none;
+  opacity: 0.7;
+  box-shadow: none;
+  transition: none;
+}
+
+.disabled-link button:hover {
+  background-color: #cccccc;
+  color: #666666;
+  border: none;
+}
+
+.chat-disabled {
+  pointer-events: none;
+  color: #aaa;
+  cursor: not-allowed;
+  opacity: 0.6;
+  text-decoration: none;
+}
+
+.modal-sesion {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: #fefefe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9;
+  
+}
+
+.modal-content {
+  background-color: #fefefe;
+  padding: 50px;
+  border-radius: 12px;
+  text-align: center;
+  position: relative;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+  z-index: 10;
+}
+
+
+.close-btn {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #888;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+.hidden {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}

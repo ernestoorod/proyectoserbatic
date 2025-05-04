@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Empresa</title>
+
+    <link rel="stylesheet" th:href="@{https://unpkg.com/leaflet@1.9.4/dist/leaflet.css}" />
+    <link rel="stylesheet" th:href="@{/css/formularioempresas.css}" />
+
+    <style>
+        #map {
+            height: 400px;
+        }
+        .error-text {
+            color: red;
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+        .error-border {
+            border: 1px solid red;
+        }
+        .img-preview {
+            max-width: 200px;
+            margin-top: 0.5rem;
+            display: block;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <div style="margin-bottom: 1rem;">
+        <a onclick="history.back()" 
+           style="text-decoration: none; color: #555; font-size: 1rem; cursor: pointer; transition: color 0.3s, transform 0.3s;"
+           onmouseover="this.style.color='#000'; this.style.transform='translateX(-5px)';"
+           onmouseout="this.style.color='#555'; this.style.transform='translateX(0)';">
+           ← Volver
+        </a>
+    </div>        
+    <h2>Registro de Empresa</h2>
+
+    <form id="empresaForm" th:action="@{/guardar}" th:object="${empresa}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{servicio.id}"/>
+
+        <div>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" th:field="*{nombre}">
+            <div id="error-nombre" class="error-text"></div>
+        </div>
+
+        <div>
+            <label for="pais">País:</label>
+            <select id="pais" th:field="*{pais}">
+                <option value="">Seleccione un país</option>
+                <option value="España" data-prefijo="+34">España</option>
+                <option value="Estados Unidos" data-prefijo="+1">Estados Unidos</option>
+                <option value="Reino Unido" data-prefijo="+44">Reino Unido</option>
+                <option value="Alemania" data-prefijo="+49">Alemania</option>
+                <option value="Francia" data-prefijo="+33">Francia</option>
+                <option value="Italia" data-prefijo="+39">Italia</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" th:field="*{email}">
+            <div id="error-email" class="error-text"></div>
+        </div>
+
+        <div>
+            <label for="sitio_web">Sitio Web:</label>
+            <input type="url" id="sitio_web" th:field="*{sitioWeb}">
+        </div>
+
+        <div>
+            <label for="hora_apertura">Hora de Apertura:</label>
+            <input type="time" id="hora_apertura" th:field="*{horaApertura}">
+        </div>
+
+        <div>
+            <label for="hora_cierre">Hora de Cierre:</label>
+            <input type="time" id="hora_cierre" th:field="*{horaCierre}">
+        </div>
+
+        <div class="span-2">
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" th:field="*{descripcion}" rows="4"></textarea>
+            <div id="error-descripcion" class="error-text"></div>
+        </div>
+
+        <div>
+            <label for="telefono">Teléfono:</label>
+            <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="prefijo" readonly style="width: 70px;">
+                <input type="tel" id="telefono" th:field="*{telefono}">
+            </div>
+            <div id="error-telefono" class="error-text"></div>
+        </div>
+
+        <div>
+            <label for="acepta_reservas">¿Acepta Reservas?</label>
+            <select id="acepta_reservas" th:field="*{aceptaReservas}">
+                <option th:value="true">Sí</option>
+                <option th:value="false">No</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="facebook">Facebook:</label>
+            <input type="url" id="facebook" th:field="*{facebook}" placeholder="https://facebook.com/tuempresa">
+            <div id="error-facebook" class="error-text"></div>
+        </div>
+
+        <div>
+            <label for="instagram">Instagram:</label>
+            <input type="url" id="instagram" th:field="*{instagram}" placeholder="https://instagram.com/tuempresa">
+            <div id="error-instagram" class="error-text"></div>
+        </div>
+
+        <div>
+            <label for="linkedin">LinkedIn:</label>
+            <input type="url" id="linkedin" th:field="*{linkedin}" placeholder="https://linkedin.com/company/tuempresa">
+            <div id="error-linkedin" class="error-text"></div>
+        </div>
+
+        <div>
+            <label for="x">X (Twitter):</label>
+            <input type="url" id="x" th:field="*{x}" placeholder="https://x.com/tuempresa">
+            <div id="error-x" class="error-text"></div>
+        </div>
+
+        <div class="span-2">
+            <label for="imagenPortadaFile">Imagen de Portada:</label>
+            <input type="file" id="imagenPortadaFile" name="imagenPortadaFile" accept="image/*">
+            <div id="error-imagen" class="error-text"></div>
+            <img th:if="${imagenPortadaBase64 != null}" 
+                 th:src="'data:image/jpeg;base64,' + ${imagenPortadaBase64}" 
+                 class="img-preview" 
+                 alt="Imagen Portada"/>
+        </div>
+
+        <div class="span-2">
+            <label>Ubicación en el mapa:</label>
+            <div id="map"></div>
+        </div>
+
+        <div>
+            <label for="latitud">Latitud:</label>
+            <input type="text" id="latitud" th:field="*{latitud}">
+        </div>
+
+        <div>
+            <label for="longitud">Longitud:</label>
+            <input type="text" id="longitud" th:field="*{longitud}">
+        </div>
+
+        <div>
+            <label for="ciudad">Ciudad:</label>
+            <input type="text" id="ciudad" th:field="*{ciudad}">
+        </div>
+
+        <div>
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" th:field="*{direccion}">
+        </div>
+
+        <div class="span-2" style="display: flex; gap: 1rem;">
+            <button type="submit">Guardar</button>
+            <button type="reset" style="background: #555;">Limpiar</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script th:src="@{/js/formularioempresas.js}"></script>
+
+</body>
+</html>

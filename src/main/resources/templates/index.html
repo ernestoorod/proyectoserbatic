@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/index/headFragment :: headFragment"></head>
+<body>
+  <!-- Imagen de fondo dinámica -->
+  <img id="bg-image" class="bg-image" src="" alt="Fondo del servicio">
+  <div class="overlay"></div>
+
+  <!-- Header y Sidebar -->
+  <header th:replace="fragments/index/headerFragment :: headerFragment"></header>
+  <nav th:replace="fragments/index/sidebarFragment :: sidebarFragment"></nav>
+
+  <main>
+    <div id="servicio-info" style="text-align: center; margin-top: 40px;">
+      <h2 id="servicio-titulo">Selecciona un servicio</h2>
+      <a id="servicio-enlace" href="#" class="btn-ver-empresas"
+         style="display: inline-block; margin-top: 10px; padding: 10px 20px; background-color: #858585; color: white; border-radius: 5px; text-decoration: none;">
+         Ver empresas
+      </a>
+    </div>
+
+    <div class="pagination" id="pagination">1 / 1</div>
+  </main>
+
+  <!-- Scripts -->
+  <th:block th:replace="fragments/index/scriptsFragment :: scriptsFragment"></th:block>
+</body>
+</html>
