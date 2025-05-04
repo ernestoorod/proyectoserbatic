@@ -1,0 +1,5 @@
+2025-05-04 23:53:42 INFO  e.s.S.c.usuario.UsuarioController - Inicio de sesión exitoso para usuario: ernesto desde IP: 0:0:0:0:0:0:0:1
+2025-05-04 23:53:50 INFO  e.s.S.c.usuario.UsuarioController - Cierre de sesión de usuario: ernesto desde IP: 0:0:0:0:0:0:0:1
+2025-05-04 23:54:00 WARN  e.s.S.c.usuario.UsuarioController - Intento fallido de login para usuario: admin desde IP: 0:0:0:0:0:0:0:1
+2025-05-04 23:54:21 INFO  e.s.S.c.usuario.UsuarioController - Inicio de sesión exitoso para usuario: admin desde IP: 0:0:0:0:0:0:0:1
+2025-05-04 23:54:45 INFO  e.s.S.c.usuario.UsuarioController - Cierre de sesión de usuario: admin desde IP: 0:0:0:0:0:0:0:1

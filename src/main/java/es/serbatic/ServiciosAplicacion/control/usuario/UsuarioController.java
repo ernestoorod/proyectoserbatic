@@ -4,15 +4,12 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import es.serbatic.ServiciosAplicacion.model.usuario.UsuarioDTO;
 import es.serbatic.ServiciosAplicacion.model.usuario.UsuarioVO;
@@ -26,6 +23,8 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioServiceImplementacion service;
+
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
     @GetMapping("/registro")
     public String mostrarRegistro(
@@ -41,7 +40,8 @@ public class UsuarioController {
     public String registrarUsuario(
         @ModelAttribute("userInfo") UsuarioDTO userDto,
         @RequestParam(value = "redirect", required = false) String redirect,
-        Model model
+        Model model,
+        HttpServletRequest request
     ) {
         if (service.usuarioExiste(userDto.getUser()) != null) {
             model.addAttribute("errorMessage", "Este nombre de usuario ya está en uso.");
@@ -61,6 +61,8 @@ public class UsuarioController {
         user.setRole(userDto.getRole());
 
         service.insertar(user);
+
+        logger.info("Registro exitoso para usuario: {} desde IP: {}", user.getUser(), getClientIp(request));
 
         return "redirect:/login" + (redirect != null && !redirect.isBlank() ? "?redirect=" + redirect : "");
     }
@@ -84,31 +86,37 @@ public class UsuarioController {
         @ModelAttribute("userInfo") UsuarioDTO user,
         @RequestParam(value = "redirect", required = false) String redirect,
         HttpSession session,
-        Model model
+        Model model,
+        HttpServletRequest request
     ) {
         UsuarioVO usuarioExiste = service.autenticar(user.getUser(), user.getPass());
+        String ip = getClientIp(request);
+
         if (usuarioExiste != null) {
+            logger.info("Inicio de sesión exitoso para usuario: {} desde IP: {}", user.getUser(), ip);
             session.setAttribute("usuarioExiste", usuarioExiste);
             return redirect != null && !redirect.isBlank() ? "redirect:" + redirect : "redirect:/";
         }
 
+        logger.warn("Intento fallido de login para usuario: {} desde IP: {}", user.getUser(), ip);
         model.addAttribute("errorMessage", "La cuenta no existe o las credenciales son incorrectas.");
         model.addAttribute("userInfo", user);
         model.addAttribute("redirect", redirect);
         return "login";
     }
 
-
     @GetMapping("/logout")
     public String logout(
         HttpSession session,
+        HttpServletRequest request,
         @RequestParam(value = "redirect", required = false) String redirect
     ) {
-        session.invalidate();
-        if (redirect != null && !redirect.isBlank()) {
-            return "redirect:" + redirect;
+        UsuarioVO actual = (UsuarioVO) session.getAttribute("usuarioExiste");
+        if (actual != null) {
+            logger.info("Cierre de sesión de usuario: {} desde IP: {}", actual.getUser(), getClientIp(request));
         }
-        return "redirect:/";
+        session.invalidate();
+        return redirect != null && !redirect.isBlank() ? "redirect:" + redirect : "redirect:/";
     }
 
     @GetMapping("/perfil")
@@ -123,7 +131,6 @@ public class UsuarioController {
             return "redirect:/login";
         }
 
-        // Guardamos en sesión el redirect al entrar a perfil
         if (redirect != null && !redirect.isBlank()) {
             session.setAttribute("redirectPerfil", redirect);
         } else if (session.getAttribute("redirectPerfil") == null) {
@@ -189,6 +196,7 @@ public class UsuarioController {
     public String eliminarPerfil(HttpSession session) {
         UsuarioVO actual = (UsuarioVO) session.getAttribute("usuarioExiste");
         if (actual != null) {
+            logger.info("Usuario eliminado: {}", actual.getUser());
             service.eliminar(actual.getId());
             session.invalidate();
         }
@@ -218,7 +226,6 @@ public class UsuarioController {
             return "redirect:/perfil";
         }
 
-        // Permitimos USER, ADMIN y JEFE_EMPRESA
         if (rol.equalsIgnoreCase("USER") || rol.equalsIgnoreCase("ADMIN") || rol.equalsIgnoreCase("JEFE_EMPRESA")) {
             UsuarioVO usuario = service.buscarPorId(id);
             if (usuario != null) {
@@ -233,7 +240,6 @@ public class UsuarioController {
         return "redirect:/admin/usuarios";
     }
 
-
     @PostMapping("/perfil/verificar-pass")
     @ResponseBody
     public Map<String, Boolean> verificarPass(
@@ -244,5 +250,10 @@ public class UsuarioController {
         UsuarioVO actual = (UsuarioVO) session.getAttribute("usuarioExiste");
         boolean correcto = actual != null && BCrypt.checkpw(passActual, actual.getPass());
         return Collections.singletonMap("correcto", correcto);
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String xfHeader = request.getHeader("X-Forwarded-For");
+        return xfHeader != null ? xfHeader.split(",")[0] : request.getRemoteAddr();
     }
 }
