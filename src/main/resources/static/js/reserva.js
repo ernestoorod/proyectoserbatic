@@ -1,11 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const diasDiv        = document.getElementById('dias');
-  const horasDiv       = document.getElementById('horas');
-  const monthLabel     = document.getElementById('monthLabel');
-  const modalEl        = document.getElementById('feedbackModal');
-  const modalMsg       = document.getElementById('modalMessage');
-  const confirmarBtn   = document.getElementById('confirmarBtn');
-  const bootstrapModal = new bootstrap.Modal(modalEl);
+  const diasDiv      = document.getElementById('dias');
+  const horasDiv     = document.getElementById('horas');
+  const monthLabel   = document.getElementById('monthLabel');
+  const modalEl      = document.getElementById('feedbackModal');
+  const modalMsg     = document.getElementById('modalMessage');
+  const confirmarBtn = document.getElementById('confirmarBtn');
 
   let fechaSeleccionada = null;
   let horaSeleccionada  = null;
@@ -22,9 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
     return `${y}-${m}-${day}`;
   };
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const fechaDesdeURL = urlParams.get("fecha");
+  const urlParams      = new URLSearchParams(window.location.search);
+  const fechaDesdeURL  = urlParams.get("fecha");
 
+  // Scroll horizontal de días
   (() => {
     let isDown = false, startX, scrollLeft;
     diasDiv.addEventListener('mousedown', e => {
@@ -90,7 +90,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (fechaPrioritaria) {
       const fechaObj = new Date(fechaPrioritaria);
       if (fechaObj.getMonth() === mes && fechaObj.getFullYear() === año) {
-        const card = [...diasDiv.querySelectorAll('.card')].find(el => el.dataset.iso === fechaPrioritaria);
+        const card = [...diasDiv.querySelectorAll('.card')]
+          .find(el => el.dataset.iso === fechaPrioritaria);
         if (card) {
           card.click();
           setTimeout(() => {
@@ -127,7 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (fechaElegida < hoy) {
       horasDiv.innerHTML = `
-        <div style="font-size: 1.3rem; font-weight: 500; text-align: center; color: #777; padding: 2rem 0; width: 100%;">
+        <div style="font-size: 1.3rem; font-weight: 500; text-align: center;
+                    color: #777; padding: 2rem 0; width: 100%;">
           No hay horas disponibles
         </div>`;
       return;
@@ -145,7 +147,8 @@ document.addEventListener('DOMContentLoaded', function() {
     horasDiv.innerHTML = '';
     if (!horas || horas.length === 0) {
       horasDiv.innerHTML = `
-        <div style="font-size: 1.3rem; font-weight: 500; text-align: center; color: #777; padding: 2rem 0; width: 100%;">
+        <div style="font-size: 1.3rem; font-weight: 500; text-align: center;
+                    color: #777; padding: 2rem 0; width: 100%;">
           No hay horas disponibles
         </div>`;
       return;
@@ -187,9 +190,18 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   confirmarBtn.addEventListener('click', () => {
-    if (fechaSeleccionada && horaSeleccionada) {
-      reservar(fechaSeleccionada, horaSeleccionada);
-    }
+    if (!fechaSeleccionada || !horaSeleccionada) return;
+
+    // Mostrar modal de espera, bloqueante
+    modalMsg.textContent = 'Espere confirmación…';
+    const waitModal = new bootstrap.Modal(modalEl, {
+      backdrop: 'static',
+      keyboard: false
+    });
+    waitModal.show();
+
+    // Iniciar reserva
+    reservar(fechaSeleccionada, horaSeleccionada);
   });
 
   function reservar(fechaISO, horaStr) {
@@ -203,19 +215,18 @@ document.addEventListener('DOMContentLoaded', function() {
       throw new Error(msg || 'Error al reservar');
     })
     .then(() => {
-      mostrarModal('¡Reserva confirmada!');
+      // Reserva OK: actualizar texto
+      modalMsg.textContent = '¡Reserva confirmada!';
     })
-    .catch(err => mostrarModal(err.message));
+    .catch(err => {
+      // Error al reservar: mostrar mensaje
+      modalMsg.textContent = err.message;
+    })
+    .finally(() => {
+      // Poner foco en el botón Cerrar para poder cerrarlo
+      document.getElementById('modalClose').focus();
+    });
   }
-
-  function mostrarModal(msg) {
-    modalMsg.textContent = msg;
-    bootstrapModal.show();
-  }
-
-  // document.getElementById('modalClose').addEventListener('click', () => {
-  //   window.location.href = `/empresa?empresaID=${empresaId}`;
-  // });
 
   document.getElementById('prevMonth').addEventListener('click', () => {
     mesActual.setMonth(mesActual.getMonth() - 1);

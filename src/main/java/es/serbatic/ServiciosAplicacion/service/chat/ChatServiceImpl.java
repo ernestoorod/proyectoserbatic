@@ -1,159 +1,132 @@
-// package es.serbatic.ServiciosAplicacion.service.chat;
+package es.serbatic.ServiciosAplicacion.service.chat;
 
-// import es.serbatic.ServiciosAplicacion.model.chat.PreguntaIA;
-// import es.serbatic.ServiciosAplicacion.model.empresa.EmpresaVO;
-// import es.serbatic.ServiciosAplicacion.model.reserva.ReservaVO;
-// import es.serbatic.ServiciosAplicacion.model.servicio.ServicioVO;
-// import es.serbatic.ServiciosAplicacion.model.usuario.UsuarioVO;
-// import es.serbatic.ServiciosAplicacion.repository.chat.PreguntaIARepository;
-// import es.serbatic.ServiciosAplicacion.repository.empresa.EmpresaRepository;
-// import es.serbatic.ServiciosAplicacion.repository.reserva.ReservaRepository;
-// import es.serbatic.ServiciosAplicacion.repository.servicio.ServicioRepository;
-// import jakarta.servlet.http.HttpSession;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.stereotype.Service;
-// import org.springframework.web.reactive.function.client.WebClient;
+import es.serbatic.ServiciosAplicacion.model.empresa.EmpresaVO;
+import es.serbatic.ServiciosAplicacion.model.reserva.ReservaVO;
+import es.serbatic.ServiciosAplicacion.model.servicio.ServicioVO;
+import es.serbatic.ServiciosAplicacion.model.usuario.UsuarioVO;
+import es.serbatic.ServiciosAplicacion.repository.empresa.EmpresaRepository;
+import es.serbatic.ServiciosAplicacion.repository.reserva.ReservaRepository;
+import es.serbatic.ServiciosAplicacion.repository.servicio.ServicioRepository;
+import jakarta.servlet.http.HttpSession;
 
-// import java.time.LocalDateTime;
-// import java.util.List;
-// import java.util.Map;
-// import java.util.Optional;
-// import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
-// @Service
-// public class ChatServiceImpl implements ChatService {
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-//     @Autowired private EmpresaRepository empresaRepository;
-//     @Autowired private ServicioRepository servicioRepository;
-//     @Autowired private ReservaRepository reservaRepository;
-//     @Autowired private PreguntaIARepository preguntaIARepository;
-//     @Autowired private HttpSession session;
+@Service
+public class ChatServiceImpl implements ServiceChat {
 
-//     private final WebClient webClient;
+    @Autowired
+    private EmpresaRepository empresaRepository;
 
-//     public ChatServiceImpl() {
-//         this.webClient = WebClient.builder()
-//                 .baseUrl("https://api.openai.com/v1/chat/completions")
-//                 .defaultHeader("Authorization", "Bearer tuapikey")
-//                 .build();
-//     }
+    @Autowired
+    private ServicioRepository servicioRepository;
 
-//     @Override
-//     public String processQuestion(String question) {
-//         UsuarioVO usuario = getCurrentUser();
-//         if (usuario == null) {
-//             return "No hay sesión de usuario activa.";
-//         }
+    @Autowired
+    private ReservaRepository reservaRepository;
 
-//         Optional<PreguntaIA> preguntaExistente = preguntaIARepository.findAll().stream()
-//                 .filter(p -> p.getTextoPregunta().trim().equalsIgnoreCase(question.trim()))
-//                 .findFirst();
+    @Autowired
+    private HttpSession session;
 
-//         if (preguntaExistente.isPresent()) {
-//             return preguntaExistente.get().getRespuestaGenerada();
-//         }
+    private final WebClient webClient;
 
-//         List<EmpresaVO> empresas = empresaRepository.findAll();
-//         List<ServicioVO> servicios = servicioRepository.findAll();
-//         List<ReservaVO> reservas = reservaRepository.findAll();
+    public ChatServiceImpl() {
+        this.webClient = WebClient.builder()
+            .baseUrl("https://api.openai.com/v1/chat/completions")
+            .defaultHeader("Authorization", "Bearer TU_API_KEY")
+            .build();
+    }
 
-//         String datosContexto = """
-//         [USUARIO ACTUAL]
-//         ID: %d, Nombre completo: %s, Usuario: %s, Email: %s, Teléfono: %s, Dirección: %s, Rol: %s
+    @Override
+    public String processQuestion(String question) {
+        UsuarioVO usuario = getCurrentUser();
+        if (usuario == null) {
+            return "No hay sesión de usuario activa.";
+        }
 
-//         [EMPRESAS]
-//         %s
+        // Construir contexto con datos de usuario, empresas, servicios y reservas
+        List<EmpresaVO> empresas = empresaRepository.findAll();
+        List<ServicioVO> servicios = servicioRepository.findAll();
+        List<ReservaVO> reservas = reservaRepository.findAll();
 
-//         [SERVICIOS]
-//         %s
+        String contextoEmpresas = empresas.stream()
+            .map(e -> "ID: " + e.getId()
+                + ", Nombre: " + e.getNombre()
+                + ", Descripción: " + e.getDescripcion()
+                + ", Ciudad: " + e.getCiudad()
+                + ", Activa: " + e.isActivo())
+            .collect(Collectors.joining("\n"));
 
-//         [RESERVAS]
-//         %s
-//         """.formatted(
-//                 usuario.getId(),
-//                 usuario.getFullName(),
-//                 usuario.getUser(),
-//                 usuario.getEmail(),
-//                 usuario.getPhone(),
-//                 usuario.getAddress(),
-//                 usuario.getRole(),
+        String contextoServicios = servicios.stream()
+            .map(s -> "ID: " + s.getId()
+                + ", Nombre: " + s.getNombre()
+                + ", Activo: " + s.isActivo())
+            .collect(Collectors.joining("\n"));
 
-//                 empresas.stream()
-//                         .map(e -> "ID: " + e.getId()
-//                                 + ", Nombre: " + e.getNombre()
-//                                 + ", Descripción: " + e.getDescripcion()
-//                                 + ", Teléfono: " + e.getTelefono()
-//                                 + ", Email: " + e.getEmail()
-//                                 + ", Ciudad: " + e.getCiudad()
-//                                 + ", País: " + e.getPais()
-//                                 + ", Dirección: " + e.getDireccion()
-//                                 + ", Activa: " + e.isActivo()
-//                                 + ", Acepta reservas: " + e.isAceptaReservas()
-//                                 + ", Servicio: " + (e.getServicio() != null ? e.getServicio().getNombre() : "N/A")
-//                                 + ", Horario: " + e.getHoraApertura() + " - " + e.getHoraCierre())
-//                         .collect(Collectors.joining("\n")),
+        String contextoReservas = reservas.stream()
+            .map(r -> "ID: " + r.getId()
+                + ", Fecha: " + r.getFecha()
+                + ", Usuario: " + r.getUsuario().getFullName())
+            .collect(Collectors.joining("\n"));
 
-//                 servicios.stream()
-//                         .map(s -> "ID: " + s.getId()
-//                                 + ", Nombre: " + s.getNombre()
-//                                 + ", Activo: " + s.isActivo())
-//                         .collect(Collectors.joining("\n")),
+        String systemPrompt = String.format("""
+            Eres un asistente de una aplicación de gestión de usuarios, empresas, servicios y reservas.
 
-//                 reservas.stream()
-//                         .map(r -> "ID: " + r.getId()
-//                                 + ", Fecha: " + r.getFecha()
-//                                 + ", Hora: " + r.getHora()
-//                                 + ", Empresa: " + r.getEmpresa().getNombre()
-//                                 + ", Ciudad: " + r.getEmpresa().getCiudad()
-//                                 + ", Usuario: " + r.getUsuario().getFullName())
-//                         .collect(Collectors.joining("\n"))
-//         );
+            [USUARIO]
+            ID: %d, Usuario: %s, Email: %s
 
-//         String systemPrompt = """
-//         Eres un asistente de una aplicación de gestión de usuarios, empresas, servicios y reservas.
+            [EMPRESAS]
+            %s
 
-//         Aquí tienes los datos actuales del sistema:
-//         %s
+            [SERVICIOS]
+            %s
 
-//         Usa los datos para responder al usuario logueado (ID: %d, Usuario: %s) de forma clara y directa.
-//         Si no puedes responder con la información disponible, simplemente dilo.
+            [RESERVAS]
+            %s
 
-//         Pregunta:
-//         """.formatted(datosContexto, usuario.getId(), usuario.getUser());
+            Responde de forma clara y directa. Si no hay suficiente información, dilo.
+            Pregunta:
+            """,
+            usuario.getId(),
+            usuario.getUser(),
+            usuario.getEmail(),
+            contextoEmpresas,
+            contextoServicios,
+            contextoReservas
+        );
 
-//         Map<String, Object> response = webClient.post()
-//                 .bodyValue(Map.of(
-//                         "model", "gpt-3.5-turbo",
-//                         "messages", List.of(
-//                                 Map.of("role", "system", "content", systemPrompt),
-//                                 Map.of("role", "user", "content", question)
-//                         )
-//                 ))
-//                 .retrieve()
-//                 .bodyToMono(Map.class)
-//                 .block();
+        // Llamada a OpenAI
+        Map<String, Object> response = webClient.post()
+            .bodyValue(Map.of(
+                "model", "gpt-3.5-turbo",
+                "messages", List.of(
+                    Map.of("role", "system", "content", systemPrompt),
+                    Map.of("role", "user",   "content", question)
+                )
+            ))
+            .retrieve()
+            .bodyToMono(Map.class)
+            .block();
 
-//         String content = "No se pudo obtener respuesta del modelo.";
-//         if (response != null && response.containsKey("choices")) {
-//             Object choice = ((List<?>) response.get("choices")).get(0);
-//             if (choice instanceof Map<?, ?> choiceMap) {
-//                 Map<?, ?> message = (Map<?, ?>) choiceMap.get("message");
-//                 content = (String) message.get("content");
-//             }
-//         }
+        // Extraer contenido
+        String content = "No se pudo obtener respuesta del modelo.";
+        if (response != null && response.containsKey("choices")) {
+            Object choice = ((List<?>) response.get("choices")).get(0);
+            if (choice instanceof Map<?, ?> choiceMap) {
+                Map<?, ?> message = (Map<?, ?>) choiceMap.get("message");
+                content = (String) message.get("content");
+            }
+        }
 
-//         PreguntaIA nuevaPregunta = new PreguntaIA();
-//         nuevaPregunta.setTextoPregunta(question);
-//         nuevaPregunta.setRespuestaGenerada(content);
-//         nuevaPregunta.setRespondida(true);
-//         nuevaPregunta.setFecha(LocalDateTime.now());
-//         nuevaPregunta.setUsuario(usuario);
-//         preguntaIARepository.save(nuevaPregunta);
+        return content;
+    }
 
-//         return content;
-//     }
-
-//     private UsuarioVO getCurrentUser() {
-//         return (UsuarioVO) session.getAttribute("usuarioExiste");
-//     }
-// }
+    /** Recupera el usuario actual de la sesión HTTP */
+    private UsuarioVO getCurrentUser() {
+        return (UsuarioVO) session.getAttribute("usuarioExiste");
+    }
+}

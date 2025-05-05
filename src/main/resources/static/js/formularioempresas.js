@@ -110,17 +110,16 @@ function validarFormulario(event) {
     const nombre = document.getElementById('nombre').value.trim();
     const email = document.getElementById('email').value.trim();
     const telefono = document.getElementById('telefono').value.trim();
-    const descripcion = document.getElementById('descripcion').value.trim();
     const imagenFile = document.getElementById('imagenPortadaFile').files[0];
 
-    // Descripción mínimo 100 palabras
-    const palabraCount = descripcion.split(/\s+/).filter(Boolean).length;
-    if (palabraCount < 100) {
-        mostrarError('descripcion', 'error-descripcion', 'La descripción debe tener al menos 100 palabras.');
-        valido = false;
-    } else {
-        mostrarError('descripcion', 'error-descripcion', '');
-    }
+    // // Descripción mínimo 100 palabras
+    // const palabraCount = descripcion.split(/\s+/).filter(Boolean).length;
+    // if (palabraCount < 100) {
+    //     mostrarError('descripcion', 'error-descripcion', 'La descripción debe tener al menos 100 palabras.');
+    //     valido = false;
+    // } else {
+    //     mostrarError('descripcion', 'error-descripcion', '');
+    // }
 
     // Validación nombre
     if (nombre.length < 2) {

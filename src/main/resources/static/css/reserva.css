@@ -31,17 +31,33 @@
     transition: background-color 0.3s, color 0.3s;
 }
 
-#confirmarBtn:hover {
+#confirmarBtn:hover:not(.disabled) {
     background-color: #f2f2f2;
     color: #333333;
     border: 1px solid #333333;
 }
 
-/* --------- Estilo Botón Confirmar desactivado --------- */
+/* --------- Estado deshabilitado --------- */
 #confirmarBtn.disabled {
     background-color: #ccc !important;
     color: #666 !important;
     cursor: not-allowed;
+}
+
+/* --------- Spinner de carga de Bootstrap ya trae su estilo --------- */
+
+/* --------- Puntos animados --------- */
+@keyframes blink {
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 1; }
+}
+
+#dots {
+  display: inline-block;
+}
+#dots::after {
+  content: '...';
+  animation: blink 1.5s infinite steps(3);
 }
 
 /* --------- Estilo del Modal --------- */
@@ -69,4 +85,4 @@
 .volver-btn:hover {
     color: black;
     text-decoration: underline;
-} 
+}

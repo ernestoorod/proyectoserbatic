@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    var map = L.map('map').setView([40.4168, -3.7038], 11);
+    var map = L.map('map').setView([40.4168, -3.7038], 12);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
@@ -24,9 +24,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     markers.push(marker.getLatLng());
                 }
             });
+
             if (markers.length > 0) {
                 const bounds = L.latLngBounds(markers);
-                map.fitBounds(bounds);
+                map.fitBounds(bounds, {
+                    padding: [50, 50],
+                    maxZoom: 14
+                });
                 map.invalidateSize();
             }
         })

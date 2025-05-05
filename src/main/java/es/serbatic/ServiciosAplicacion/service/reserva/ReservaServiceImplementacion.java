@@ -4,10 +4,12 @@ import es.serbatic.ServiciosAplicacion.model.empresa.EmpresaVO;
 import es.serbatic.ServiciosAplicacion.model.reserva.ReservaVO;
 import es.serbatic.ServiciosAplicacion.model.usuario.UsuarioVO;
 import es.serbatic.ServiciosAplicacion.repository.reserva.ReservaRepository;
+import es.serbatic.ServiciosAplicacion.service.email.EmailService;
 import es.serbatic.ServiciosAplicacion.service.empresa.EmpresaService;
 import es.serbatic.ServiciosAplicacion.service.usuario.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,6 +24,7 @@ public class ReservaServiceImplementacion implements ReservaService {
     private final ReservaRepository reservaRepo;
     private final EmpresaService empresaService;
     private final UsuarioService usuarioService;
+    private final EmailService emailService;  // <-- Inyectamos el servicio de correo
 
     @Override
     public List<String> horasLibres(Integer empresaId, LocalDate fecha) {
@@ -47,6 +50,7 @@ public class ReservaServiceImplementacion implements ReservaService {
     }
 
     @Override
+    @Transactional
     public void reservar(Integer empresaId, LocalDate fecha, LocalTime hora, Long usuarioId) {
         EmpresaVO empresa = empresaService.obtenerEmpresaPorId(empresaId);
         UsuarioVO usuario = usuarioService.getByID(usuarioId);
@@ -66,12 +70,17 @@ public class ReservaServiceImplementacion implements ReservaService {
             throw new IllegalStateException("Hueco ocupado");
         }
 
+        // Creación y guardado de la reserva
         ReservaVO r = new ReservaVO();
         r.setEmpresa(empresa);
         r.setFecha(fecha);
         r.setHora(hora);
         r.setUsuario(usuario);
         reservaRepo.save(r);
+
+        // Disparamos correos de confirmación a empresa y cliente
+        emailService.sendReservationConfirmationToCompany(empresa, r);
+        emailService.sendReservationConfirmationToClient(usuario, r);
     }
 
     @Override
