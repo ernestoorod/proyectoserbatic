@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat con IA</title>
-  <link rel="stylesheet" th:href="@{/css/chat.css}">
+  <!-- Font Awesome para los iconos -->
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/css/chat.css">
 </head>
 <body>
   <div class="container">
@@ -13,21 +18,35 @@
       <h3 id="chatTitle">Chat con IA</h3>
       <a id="historyLink">HISTORIAL</a>
     </header>
+
     <div id="historyContainer">
       <ul id="historyList"></ul>
     </div>
+
     <div class="chat-window" id="chatWindow">
-      <button id="newChatIcon" class="new-chat-icon">+</button>
-      <div id="faqContainer">
-        <span class="faq-button" data-q="¿Puedes decirme cuáles son mis reservas actuales?">¿Puedes decirme cuáles son mis reservas actuales?</span>
-        <span class="faq-button" data-q="¿Existe alguna empresa ubicada en Zamora?">¿Existe alguna empresa ubicada en Zamora?</span>
+      <!-- BOTÓN “+” OCULTO AL INICIO, con tooltip -->
+      <button id="newChatIcon"
+              class="btn-outline-fancy"
+              data-tooltip="Nuevo chat">
+        <i class="fas fa-plus"></i>
+      </button>
+
+      <div id="faqContainer" class="faq-container">
+        <span class="faq-button" data-q="¿Puedes decirme cuáles son mis reservas actuales?">
+          ¿Puedes decirme cuáles son mis reservas actuales?
+        </span>
+        <span class="faq-button" data-q="¿Existe alguna empresa ubicada en Zamora?">
+          ¿Existe alguna empresa ubicada en Zamora?
+        </span>
       </div>
     </div>
+
     <footer class="chat-footer">
       <textarea id="question" placeholder="Escribe tu pregunta..."></textarea>
-      <button id="sendBtn">Enviar</button>
+      <button id="sendBtn" class="btn-fancy">Enviar</button>
     </footer>
   </div>
-  <script th:src="@{/js/chat.js}"></script>
+
+  <script src="/js/chat.js"></script>
 </body>
 </html>

@@ -1,0 +1,134 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background-color: #f8f9fa;
+  }
+
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: #343a40;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    z-index: 1050;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  #menu-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  .sidebar {
+    width: 240px;
+    background-color: #343a40;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    overflow-y: auto;
+    padding-top: 1rem;
+    transition: transform 0.3s ease;
+    z-index: 1040;
+  }
+
+  .sidebar.hidden {
+    transform: translateX(-100%);
+  }
+
+  .sidebar a {
+    display: block;
+    color: #ccc;
+    padding: 12px 20px;
+    text-decoration: none;
+    transition: background 0.3s;
+  }
+
+  .sidebar a:hover,
+  .sidebar .active {
+    background-color: #495057;
+    color: #fff;
+  }
+
+  .content {
+    margin-left: 240px;
+    padding: 2rem;
+    padding-top: 80px;
+    transition: margin-left 0.3s ease;
+  }
+
+  .content.full {
+    margin-left: 0;
+  }
+
+  .card-header {
+    font-weight: bold;
+  }
+
+  .info-card {
+    color: #fff;
+  }
+
+  .card-blue {
+    background-color: #0d6efd;
+  }
+
+  .card-yellow {
+    background-color: #ffc107;
+  }
+
+  .card-green {
+    background-color: #198754;
+  }
+
+  .card-red {
+    background-color: #dc3545;
+  }
+
+  .chart-container {
+    max-height: 250px;
+  }
+
+  .section {
+    display: none;
+  }
+
+  .section.active {
+    display: block;
+  }
+
+  select.rol-select {
+    font-size: 0.9rem;
+    padding: 4px;
+  }
+
+  button.actualizar-rol {
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
+
+  .volver-btn {
+      display: inline-block;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 20px;
+      color: inherit;
+      margin: 20px;
+      margin-left: 0;
+  }
+
+  .volver-btn:hover {
+      opacity: 0.7;
+      transform: translateX(-5px);
+  }

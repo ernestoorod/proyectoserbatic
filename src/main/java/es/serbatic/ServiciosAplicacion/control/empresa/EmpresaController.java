@@ -4,6 +4,8 @@ import es.serbatic.ServiciosAplicacion.model.empresa.EmpresaVO;
 import es.serbatic.ServiciosAplicacion.model.empresa.EmpresaDTO;
 import es.serbatic.ServiciosAplicacion.model.servicio.ServicioVO;
 import es.serbatic.ServiciosAplicacion.service.empresa.EmpresaService;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -140,17 +142,36 @@ public class EmpresaController {
 
     @PostMapping("/guardar")
     public String guardarEmpresa(
-            @ModelAttribute EmpresaVO empresa,
+            @ModelAttribute("empresa") EmpresaVO empresaForm,
             @RequestParam(value = "imagenPortadaFile", required = false) MultipartFile imagenPortadaFile
     ) throws IOException {
 
-        if (imagenPortadaFile != null && !imagenPortadaFile.isEmpty()) {
-            empresa.setImagenPortada(imagenPortadaFile.getBytes());
+        EmpresaVO empresaToSave;
+
+        if (empresaForm.getId() != null) {
+            // edición: cargamos la entidad existente
+            empresaToSave = empresaService.obtenerEmpresaPorId(empresaForm.getId());
+            // copiamos todo salvo la imagen y las reservas
+            BeanUtils.copyProperties(
+                empresaForm,
+                empresaToSave,
+                "imagenPortada",
+                "reservas"
+            );
+        } else {
+            // creación
+            empresaToSave = empresaForm;
         }
 
-        empresaService.guardarEmpresa(empresa);
-        return "redirect:/empresas?servicioID=" + empresa.getServicio().getId();
+        // si han subido foto, actualizamos el BLOB
+        if (imagenPortadaFile != null && !imagenPortadaFile.isEmpty()) {
+            empresaToSave.setImagenPortada(imagenPortadaFile.getBytes());
+        }
+
+        empresaService.guardarEmpresa(empresaToSave);
+        return "redirect:/empresas?servicioID=" + empresaToSave.getServicio().getId();
     }
+
 
     @GetMapping("/editar")
     public String editarEmpresa(@RequestParam("empresaID") Integer empresaID, Model model) {

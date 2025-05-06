@@ -40,4 +40,16 @@ public class HomeController {
         return "chat";
     }
 
+    @GetMapping("/dashboard")
+    public String goDashboard() {
+        return "admin/dashboard";
+    }
+
+    @GetMapping("/admin")
+    public String goAdmin() {
+        return "admin/index";
+    }
+
+
+
 }

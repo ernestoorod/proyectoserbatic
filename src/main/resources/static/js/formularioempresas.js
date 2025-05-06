@@ -64,9 +64,7 @@ function obtenerDireccion(lat, lng) {
                 document.getElementById('ciudad').value = ciudad;
             }
         })
-        .catch(error => {
-            console.error('Error obteniendo la dirección:', error);
-        });
+        .catch(error => console.error('Error obteniendo la dirección:', error));
 }
 
 function escucharCambiosInputs() {
@@ -88,8 +86,7 @@ function escucharCambiosInputs() {
 }
 
 function escucharCambioPais() {
-    const select = document.getElementById('pais');
-    select.addEventListener('change', actualizarPrefijo);
+    document.getElementById('pais').addEventListener('change', actualizarPrefijo);
 }
 
 function mostrarError(idInput, idError, mensaje) {
@@ -111,15 +108,6 @@ function validarFormulario(event) {
     const email = document.getElementById('email').value.trim();
     const telefono = document.getElementById('telefono').value.trim();
     const imagenFile = document.getElementById('imagenPortadaFile').files[0];
-
-    // // Descripción mínimo 100 palabras
-    // const palabraCount = descripcion.split(/\s+/).filter(Boolean).length;
-    // if (palabraCount < 100) {
-    //     mostrarError('descripcion', 'error-descripcion', 'La descripción debe tener al menos 100 palabras.');
-    //     valido = false;
-    // } else {
-    //     mostrarError('descripcion', 'error-descripcion', '');
-    // }
 
     // Validación nombre
     if (nombre.length < 2) {
@@ -153,7 +141,7 @@ function validarFormulario(event) {
         { campo: document.getElementById('x').value.trim(), id: 'x', dominio: /^https?:\/\/(www\.)?x\.com\/.+/, msg: 'URL de X (Twitter) inválida.' }
     ];
 
-    for (const red of redes) {
+    redes.forEach(red => {
         const errorId = `error-${red.id}`;
         if (red.campo && !red.dominio.test(red.campo)) {
             mostrarError(red.id, errorId, red.msg);
@@ -161,10 +149,11 @@ function validarFormulario(event) {
         } else {
             mostrarError(red.id, errorId, '');
         }
-    }
+    });
 
-    // Validación imagen
-    if (!imagenFile) {
+    // Validación imagen: obligatorio solo si NO hay imagen previa
+    const hasExistingImage = !!document.querySelector('.img-preview');
+    if (!imagenFile && !hasExistingImage) {
         mostrarError('imagenPortadaFile', 'error-imagen', 'Debe seleccionar una imagen de portada.');
         valido = false;
     } else {
@@ -182,6 +171,22 @@ window.addEventListener('load', () => {
     escucharCambioPais();
     inicializarMapa();
 
-    const form = document.getElementById('empresaForm');
-    form.addEventListener('submit', validarFormulario);
+    // Vista previa de nueva imagen si el usuario elige un archivo
+    document.getElementById('imagenPortadaFile').addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            let img = document.querySelector('.img-preview');
+            if (!img) {
+                img = document.createElement('img');
+                img.classList.add('img-preview');
+                this.parentNode.appendChild(img);
+            }
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    document.getElementById('empresaForm').addEventListener('submit', validarFormulario);
 });

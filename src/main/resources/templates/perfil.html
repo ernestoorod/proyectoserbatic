@@ -1,3 +1,4 @@
+<!-- src/main/resources/templates/perfil.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -73,16 +74,52 @@
             <a th:href="@{/api/reservas/reservas/mias}">
                 <button class="btn-outline" type="button">Mis Reservas</button>
             </a>
-            <a th:href="@{/admin/usuarios}" th:if="${usuario.role == 'ADMIN'}">
-                <button class="btn-outline" type="button">Usuarios</button>
-            </a>
             <button class="btn-outline" type="button" onclick="mostrarModalEliminar()">Eliminar</button>
         </div>
     </div>
 
-    <!-- Fragmentos de modal reutilizables -->
-    <div th:replace="~{fragments/modalFragment :: modal('modal', 'Confirmar Contraseña Actual', 'modalTexto1', 'Cancelar', true)}"></div>
-    <div th:replace="~{fragments/modalFragment :: modal('modalEliminar', '¿Estás seguro de que quieres eliminar esta cuenta?', 'modalTexto2', 'Cancelar', true)}"></div>
+    <!-- Formulario oculto para eliminación -->
+    <form id="eliminarForm" th:action="@{/perfil/eliminar}" method="post"></form>
+
+    <!-- Modal Confirmar Actualización -->
+    <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmar Contraseña Actual</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p id="modalTexto1">Por favor, introduce tu contraseña actual.</p>
+            <input type="password" id="passActual" class="form-control" placeholder="Contraseña actual">
+            <div class="error-message" id="errorPassActual"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" id="confirmarActualizarBtn" class="btn btn-primary">Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Confirmar Eliminación -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Eliminar Cuenta</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+            <p id="modalTexto2">¿Estás seguro que quieres eliminar tu cuenta?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" id="confirmarEliminarBtn" class="btn btn-danger">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script th:src="@{/js/perfil.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

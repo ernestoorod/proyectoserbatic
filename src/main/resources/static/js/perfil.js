@@ -1,7 +1,9 @@
+// src/main/resources/static/js/perfil.js
 document.addEventListener("DOMContentLoaded", function () {
     const formulario = document.getElementById("perfilForm");
 
     formulario.addEventListener("submit", function (event) {
+        event.preventDefault();  // detenemos siempre para abrir luego el modal
         const nombre = this.fullName.value.trim();
         const usuario = this.user.value.trim();
         const correo = this.email.value.trim();
@@ -11,7 +13,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const repetirPass = this.repetirPass.value;
 
         let valido = true;
-
         // Limpiar errores anteriores
         document.querySelectorAll(".error").forEach(e => e.textContent = "");
 
@@ -19,28 +20,23 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("errorNombre").textContent = "El nombre debe tener al menos 3 caracteres.";
             valido = false;
         }
-
         if (usuario.length < 3) {
             document.getElementById("errorUsuario").textContent = "El usuario debe tener al menos 3 caracteres.";
             valido = false;
         }
-
         const regexCorreo = /^[\w\.-]+@[\w\.-]+\.(com|es|org)$/;
         if (!regexCorreo.test(correo)) {
             document.getElementById("errorCorreo").textContent = "Correo inválido o dominio no permitido (.com, .es, .org).";
             valido = false;
         }
-
         if (!/^\d{9}$/.test(telefono)) {
             document.getElementById("errorTelefono").textContent = "El teléfono debe tener exactamente 9 dígitos.";
             valido = false;
         }
-
         if (direccion.length < 5) {
             document.getElementById("errorDireccion").textContent = "La dirección debe tener al menos 5 caracteres.";
             valido = false;
         }
-
         if (nuevaPass !== "" || repetirPass !== "") {
             const regexContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
             if (!regexContrasena.test(nuevaPass)) {
@@ -54,15 +50,13 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        if (!valido) {
-            event.preventDefault(); // 🚫 No enviar si hay errores
-        }
+        if (!valido) return;    // hay errores: no abrimos modal
+        mostrarModal();          // todo OK → mostramos modal de confirmación
     });
 
-    // Relleno visual
+    // Relleno visual de inputs
     document.querySelectorAll("input").forEach(campo => {
         if (campo.value.trim() !== "") campo.classList.add("relleno");
-
         campo.addEventListener("input", () => {
             campo.classList.toggle("relleno", campo.value.trim() !== "");
         });
@@ -71,14 +65,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function mostrarModal() {
     document.getElementById('modalTexto1').textContent = "Por favor, introduce tu contraseña actual.";
-    const modal = new bootstrap.Modal(document.getElementById('modal'));
+    const modalEl = document.getElementById('modal');
+    const modal = new bootstrap.Modal(modalEl);
     modal.show();
 
-    document.getElementById('confirmarBtn').onclick = confirmarActualizacion;
+    document.getElementById('confirmarActualizarBtn')
+        .onclick = () => confirmarActualizacion(modal);
 }
 
-function confirmarActualizacion() {
-    const passActual = document.getElementById('passActual')?.value?.trim();
+function confirmarActualizacion(modalInstance) {
+    const passActual = document.getElementById('passActual').value.trim();
     const mensaje = document.getElementById('modalTexto1');
 
     if (!passActual) {
@@ -95,7 +91,7 @@ function confirmarActualizacion() {
     .then(data => {
         if (data.correcto) {
             document.getElementById('hiddenPassActual').value = passActual;
-            bootstrap.Modal.getInstance(document.getElementById('modal')).hide();
+            modalInstance.hide();
             document.getElementById('perfilForm').submit();
         } else {
             mensaje.textContent = "Contraseña incorrecta.";
@@ -107,28 +103,15 @@ function confirmarActualizacion() {
 }
 
 function mostrarModalEliminar() {
-    document.getElementById('modalTexto2').textContent = "¿Estás seguro que quieres eliminar tu cuenta?";
-    const modal = new bootstrap.Modal(document.getElementById('modalEliminar'));
+    const modalEl = document.getElementById('modalEliminar');
+    const modal = new bootstrap.Modal(modalEl);
     modal.show();
 
-    document.getElementById('confirmarBtn').onclick = confirmarEliminacion;
+    document.getElementById('confirmarEliminarBtn')
+        .onclick = () => confirmarEliminacion();
 }
 
 function confirmarEliminacion() {
-    fetch('/perfil/eliminar', {
-        method: 'POST'
-    })
-    .then(res => {
-        if (res.redirected) {
-            window.location.href = res.url;
-        } else {
-            alert("No se pudo eliminar.");
-            bootstrap.Modal.getInstance(document.getElementById('modalEliminar')).hide();
-        }
-    })
-    .catch(() => {
-        alert("Error de red.");
-        bootstrap.Modal.getInstance(document.getElementById('modalEliminar')).hide();
-    });
+    // Enviamos formulario oculto; el redirect del servidor se aplicará automáticamente
+    document.getElementById('eliminarForm').submit();
 }
-

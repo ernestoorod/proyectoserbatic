@@ -95,6 +95,13 @@ public class UsuarioController {
         if (usuarioExiste != null) {
             logger.info("Inicio de sesión exitoso para usuario: {} desde IP: {}", user.getUser(), ip);
             session.setAttribute("usuarioExiste", usuarioExiste);
+
+            // Redirige según el rol
+            if ("ADMIN".equalsIgnoreCase(usuarioExiste.getRole())) {
+                return "admin/index"; // Esto busca una plantilla Thymeleaf
+
+            }
+
             return redirect != null && !redirect.isBlank() ? "redirect:" + redirect : "redirect:/";
         }
 
@@ -104,6 +111,7 @@ public class UsuarioController {
         model.addAttribute("redirect", redirect);
         return "login";
     }
+
 
     @GetMapping("/logout")
     public String logout(

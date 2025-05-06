@@ -5,9 +5,12 @@ import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import es.serbatic.ServiciosAplicacion.model.usuario.UsuarioDTO;
 import es.serbatic.ServiciosAplicacion.model.usuario.UsuarioVO;
+import es.serbatic.ServiciosAplicacion.repository.chat.ChatMessageRepository;
+import es.serbatic.ServiciosAplicacion.repository.chat.ChatSessionRepository;
+import es.serbatic.ServiciosAplicacion.repository.reserva.ReservaRepository;
 import es.serbatic.ServiciosAplicacion.repository.usuario.UsuarioRepository;
 
 @Service
@@ -15,6 +18,15 @@ public class UsuarioServiceImplementacion implements UsuarioService {
 
     @Autowired
     private UsuarioRepository usuariorepository;
+
+    @Autowired
+    private ChatSessionRepository chatSessionRepository;
+
+    @Autowired
+    private ChatMessageRepository chatMessageRepository;
+
+    @Autowired
+    private ReservaRepository reservaRepository;
 
     @Override
     public void actualizar(UsuarioVO usuario) {
@@ -40,42 +52,38 @@ public class UsuarioServiceImplementacion implements UsuarioService {
 
     @Override
     public UsuarioVO autenticar(String username, String password) {
-        List<UsuarioVO> usuarios = usuariorepository.findAll();
-        for (UsuarioVO usuario : usuarios) {
-            if (usuario.getUser().equals(username) && BCrypt.checkpw(password, usuario.getPass())) {
-                return usuario;
-            }
+        UsuarioVO user = usuariorepository.findByUser(username);
+        if (user != null && BCrypt.checkpw(password, user.getPass())) {
+            return user;
         }
         return null;
     }
 
     @Override
     public UsuarioVO usuarioExiste(String username) {
-        List<UsuarioVO> usuarios = usuariorepository.findAll();
-        for (UsuarioVO usuario : usuarios) {
-            if (usuario.getUser().equals(username)) {
-                return usuario;
-            }
-        }
-        return null;
+        return usuariorepository.findByUser(username);
     }
 
     @Override
+    @Transactional
     public void eliminar(Long id) {
-        usuariorepository.deleteById(id); 
+        // 1) Borrar todas las reservas del usuario
+        reservaRepository.deleteByUsuarioId(id);
+        // 2) Borrar todos los mensajes de chat de ese usuario
+        chatMessageRepository.deleteByUsuarioId(id);
+        // 3) Borrar todas las sesiones de chat del usuario
+        chatSessionRepository.deleteByUsuarioId(id);
+        // 4) Finalmente, eliminar el usuario
+        usuariorepository.deleteById(id);
+    }
+
+    @Override
+    public List<UsuarioVO> obtenerTodos() {
+        return getAll();
     }
 
     @Override
     public UsuarioVO buscarPorId(Long id) {
-        return usuariorepository.findById(id).orElse(null);
-    }
-
-    // Método auxiliar idéntico a getAll, por compatibilidad
-    public List<UsuarioVO> obtenerTodos() {
-        return usuariorepository.findAll();
-    }
-
-    public interface UsuarioService {
-        void insertarUsuario(UsuarioDTO usuario);
+        return getByID(id);
     }
 }

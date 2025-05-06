@@ -58,6 +58,7 @@ form {
     grid-template-columns: 1fr 1fr;
     gap: 20px 30px;
     text-align: left;
+    padding: 30px;          /* añadido: más espacio interno */
 }
 
 form label {
@@ -104,7 +105,7 @@ form input[type="password"]:focus {
 button {
     padding: 10px 20px;
     border: none;
-    border-radius: 8px;
+    border-radius: 20px;    /* aumentado para más redondeo */
     font-size: 16px;
     cursor: pointer;
     min-width: 140px;
@@ -124,6 +125,7 @@ button.btn-black {
 .btn-outline {
     background-color: white;
     border: 2px solid black;
+    border-radius: 20px;    /* añadido para más redondeo */
     color: black;
 }
 
@@ -191,7 +193,7 @@ button.btn-black {
     padding: 10px 20px;
     margin: 5px;
     border: none;
-    border-radius: 8px;
+    border-radius: 20px;    /* consistente con otros botones */
     font-size: 16px;
     cursor: pointer;
 }

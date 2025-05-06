@@ -12,9 +12,14 @@
         <div class="user-switch" th:if="${session.usuarioExiste != null}">
             <span id="userName" class="user-name" onclick="revealLinks()" th:text="${session.usuarioExiste.user}">Usuario</span>
             <div id="userLinks" class="user-links">
+
+                <a th:if="${session.usuarioExiste.role == 'ADMIN'}" th:href="@{/admin}">
+                    ADMINISTRACION
+                </a> 
+
                 <a th:if="${session.usuarioExiste.role == 'ADMIN'}" href="/api/servicios/administracionServicios">
                     ADMINISTRACION DE SERVICIOS
-                </a>    
+                </a>
 
                 <a th:href="@{/perfil(redirect='/')}">
                     PERFIL
