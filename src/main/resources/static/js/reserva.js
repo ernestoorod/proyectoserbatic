@@ -1,28 +1,29 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const diasDiv      = document.getElementById('dias');
-  const horasDiv     = document.getElementById('horas');
-  const monthLabel   = document.getElementById('monthLabel');
-  const modalEl      = document.getElementById('feedbackModal');
-  const modalMsg     = document.getElementById('modalMessage');
+document.addEventListener('DOMContentLoaded', function () {
+  const diasDiv = document.getElementById('dias');
+  const horasDiv = document.getElementById('horas');
+  const monthLabel = document.getElementById('monthLabel');
+  const modalEl = document.getElementById('feedbackModal');
+  const modalMsg = document.getElementById('modalMessage');
   const confirmarBtn = document.getElementById('confirmarBtn');
+  const modalClose = document.getElementById('modalClose');
 
   let fechaSeleccionada = null;
-  let horaSeleccionada  = null;
-  let mesActual         = new Date();
+  let horaSeleccionada = null;
+  let mesActual = new Date();
   mesActual.setDate(1);
 
-  const fmtDia = new Intl.DateTimeFormat('es', { weekday:'long' });
-  const fmtNum = new Intl.DateTimeFormat('es', { day:'numeric' });
-  const fmtMes = new Intl.DateTimeFormat('es', { month:'long', year:'numeric' });
+  const fmtDia = new Intl.DateTimeFormat('es', { weekday: 'long' });
+  const fmtNum = new Intl.DateTimeFormat('es', { day: 'numeric' });
+  const fmtMes = new Intl.DateTimeFormat('es', { month: 'long', year: 'numeric' });
   const fmtISO = d => {
-    const y   = d.getFullYear();
-    const m   = String(d.getMonth() + 1).padStart(2, '0');
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
     return `${y}-${m}-${day}`;
   };
 
-  const urlParams      = new URLSearchParams(window.location.search);
-  const fechaDesdeURL  = urlParams.get("fecha");
+  const urlParams = new URLSearchParams(window.location.search);
+  const fechaDesdeURL = urlParams.get("fecha");
 
   // Scroll horizontal de días
   (() => {
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
       startX = e.pageX - diasDiv.offsetLeft;
       scrollLeft = diasDiv.scrollLeft;
     });
-    ['mouseleave','mouseup'].forEach(evt => {
+    ['mouseleave', 'mouseup'].forEach(evt => {
       diasDiv.addEventListener(evt, () => {
         isDown = false;
         diasDiv.classList.remove('cursor-grabbing');
@@ -42,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     diasDiv.addEventListener('mousemove', e => {
       if (!isDown) return;
       e.preventDefault();
-      const x    = e.pageX - diasDiv.offsetLeft;
+      const x = e.pageX - diasDiv.offsetLeft;
       const walk = (x - startX) * 2;
       diasDiv.scrollLeft = scrollLeft - walk;
     });
@@ -51,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
       scrollLeft = diasDiv.scrollLeft;
     });
     diasDiv.addEventListener('touchmove', e => {
-      const x    = e.touches[0].pageX - diasDiv.offsetLeft;
+      const x = e.touches[0].pageX - diasDiv.offsetLeft;
       const walk = (x - startX) * 2;
       diasDiv.scrollLeft = scrollLeft - walk;
     });
@@ -61,19 +62,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const textoMes = fmtMes.format(mesActual);
     monthLabel.textContent = textoMes.charAt(0).toUpperCase() + textoMes.slice(1);
 
-    diasDiv.innerHTML  = '';
+    diasDiv.innerHTML = '';
     horasDiv.innerHTML = '';
-    fechaSeleccionada  = null;
-    horaSeleccionada   = null;
+    fechaSeleccionada = null;
+    horaSeleccionada = null;
     actualizarBotonConfirmar();
 
-    const año   = mesActual.getFullYear();
-    const mes   = mesActual.getMonth();
+    const año = mesActual.getFullYear();
+    const mes = mesActual.getMonth();
     const total = new Date(año, mes + 1, 0).getDate();
 
     for (let d = 1; d <= total; d++) {
       const fecha = new Date(año, mes, d);
-      const card  = document.createElement('div');
+      const card = document.createElement('div');
       card.className = 'card p-2 text-center flex-shrink-0';
       card.style.width = '6rem';
       card.dataset.iso = fmtISO(fecha);
@@ -116,14 +117,14 @@ document.addEventListener('DOMContentLoaded', function() {
     this.classList.add('bg-secondary', 'text-white');
 
     fechaSeleccionada = this.dataset.iso;
-    horaSeleccionada  = null;
+    horaSeleccionada = null;
     actualizarBotonConfirmar();
     cargarHoras(fechaSeleccionada);
   }
 
   function cargarHoras(fechaISO) {
     const hoy = new Date();
-    hoy.setHours(0,0,0,0);
+    hoy.setHours(0, 0, 0, 0);
     const fechaElegida = new Date(fechaISO);
 
     if (fechaElegida < hoy) {
@@ -156,10 +157,10 @@ document.addEventListener('DOMContentLoaded', function() {
     horas.forEach(h => {
       const label = typeof h === 'string' ? h : h.label;
       const libre = typeof h === 'string' ? true : !!h.libre;
-      const btn   = document.createElement('button');
+      const btn = document.createElement('button');
       btn.textContent = label;
-      btn.disabled    = !libre;
-      btn.className   = libre ? 'btn btn-success w-100' : 'btn btn-light w-100 disabled';
+      btn.disabled = !libre;
+      btn.className = libre ? 'btn btn-success w-100' : 'btn btn-light w-100 disabled';
 
       if (libre) {
         btn.addEventListener('click', () => {
@@ -192,15 +193,18 @@ document.addEventListener('DOMContentLoaded', function() {
   confirmarBtn.addEventListener('click', () => {
     if (!fechaSeleccionada || !horaSeleccionada) return;
 
-    // Mostrar modal de espera, bloqueante
+    confirmarBtn.disabled = true;
+
+    // Ocultar botón de cerrar y bloquear interacciones
+    modalClose.style.display = 'none';
     modalMsg.textContent = 'Espere confirmación…';
+
     const waitModal = new bootstrap.Modal(modalEl, {
       backdrop: 'static',
       keyboard: false
     });
     waitModal.show();
 
-    // Iniciar reserva
     reservar(fechaSeleccionada, horaSeleccionada);
   });
 
@@ -209,23 +213,24 @@ document.addEventListener('DOMContentLoaded', function() {
       method: 'POST',
       credentials: 'include'
     })
-    .then(async r => {
-      if (r.ok) return;
-      const msg = await r.text();
-      throw new Error(msg || 'Error al reservar');
-    })
-    .then(() => {
-      // Reserva OK: actualizar texto
-      modalMsg.textContent = '¡Reserva confirmada!';
-    })
-    .catch(err => {
-      // Error al reservar: mostrar mensaje
-      modalMsg.textContent = err.message;
-    })
-    .finally(() => {
-      // Poner foco en el botón Cerrar para poder cerrarlo
-      document.getElementById('modalClose').focus();
-    });
+      .then(async r => {
+        if (r.ok) return;
+        const msg = await r.text();
+        throw new Error(msg || 'Error al reservar');
+      })
+      .then(() => {
+        modalMsg.textContent = '¡Reserva confirmada!';
+        cargarHoras(fechaSeleccionada);
+        horaSeleccionada = null;
+        actualizarBotonConfirmar();
+      })
+      .catch(err => {
+        modalMsg.textContent = err.message;
+      })
+      .finally(() => {
+        modalClose.style.display = '';
+        modalClose.focus();
+      });
   }
 
   document.getElementById('prevMonth').addEventListener('click', () => {

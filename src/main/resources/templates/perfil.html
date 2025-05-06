@@ -4,16 +4,17 @@
     <title>Perfil de Usuario</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <link rel="stylesheet" th:href="@{/css/perfil.css}">
+    <link rel="stylesheet" th:href="@{/css/modal.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-
-    <!-- <a class="logo" th:href="@{/}"><img th:src="@{/img/logonegro.png}" alt="logo"></a> -->
 
     <div class="container">
         
         <div style="text-align: left; margin-bottom: 20px;">
-            <a th:href="@{${volverUrl}}" style="text-decoration: none; color: black; font-size: 16px;">← Volver</a>
+            <a th:href="@{${volverUrl}}" class="volver-btn">← Volver</a>
         </div>
 
         <h1>Perfil de Usuario</h1>
@@ -79,28 +80,12 @@
         </div>
     </div>
 
-    <!-- Modal para actualizar contraseña -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <h2>Confirmar Contraseña Actual</h2>
-            <input type="password" id="passActual" placeholder="Contraseña actual" required onkeydown="handleKeyPress(event)" />
-            <div id="errorMensaje" class="error-message" style="display: none;"></div>
-            <br>
-            <button type="button" onclick="confirmarActualizacion()">Confirmar</button>
-            <button type="button" onclick="cerrarModal()">Cancelar</button>
-        </div>
-    </div>
-
-    <!-- Modal para eliminar cuenta -->
-    <div id="modalEliminar" class="modal">
-        <div class="modal-content">
-            <h2>¿Estás seguro de que quieres eliminar esta cuenta?</h2>
-            <button type="button" onclick="confirmarEliminacion()">Confirmar</button>
-            <button type="button" onclick="cerrarModalEliminar()">Cancelar</button>
-        </div>
-    </div>
+    <!-- Fragmentos de modal reutilizables -->
+    <div th:replace="~{fragments/modalFragment :: modal('modal', 'Confirmar Contraseña Actual', 'modalTexto1', 'Cancelar', true)}"></div>
+    <div th:replace="~{fragments/modalFragment :: modal('modalEliminar', '¿Estás seguro de que quieres eliminar esta cuenta?', 'modalTexto2', 'Cancelar', true)}"></div>
 
     <script th:src="@{/js/perfil.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

@@ -6,6 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/empresa/header.css}">
     <link rel="stylesheet" th:href="@{/css/empresa/footer.css}">
     <link rel="stylesheet" th:href="@{/css/empresa/empresa.css}">
+    <link rel="stylesheet" th:href="@{/css/modal.css}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 </head>
@@ -14,7 +15,7 @@
 <header th:replace="~{fragments/empresa/headerFragment :: headerFragment}"></header>
 
 <div class="container">
-    <a th:href="@{/empresas(servicioID=${empresa.servicio.id})}" class="logo">← Volver</a>
+    <a th:href="@{/empresas(servicioID=${empresa.servicio.id})}" class="volver-btn">← Volver</a>
     <h1 th:text="${empresa.nombre}">Nombre de la empresa</h1>
 
     <div class="seccion">
@@ -102,20 +103,30 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div id="modalConfirmarEliminar">
-    <div id="modalContent">
-        <h1>Confirmar Eliminación</h1>
-        <h2>¿Estás seguro de que quieres eliminar esta empresa?</h2>
-        <div class="modal-buttons">
-            <button class="btn btn-secondary" onclick="confirmarEliminar()">Eliminar</button>
-            <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+<!-- Modal de Confirmación Bootstrap -->
+<div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h1 class="fs-4 mb-3">Confirmar Eliminación</h1>
+                <p class="fs-5 fw-medium mb-4">¿Estás seguro de que quieres eliminar esta empresa?</p>
+                <div class="modal-footer justify-content-center border-0">
+                    <button id="confirmarBtn" class="btn btn-danger" onclick="confirmarEliminar()">Eliminar</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <footer th:replace="~{fragments/empresas/footerFragment :: footerFragment}"></footer>
 
+<!-- Carga primero Bootstrap JS para que el objeto bootstrap esté disponible -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76ASt5kaT3cdkM2z5cF3Lwr9OTiZC1Uj0amF1rjH2zWd6FO1kR5yAGuvvG1hGzR"
+        crossorigin="anonymous"></script>
+
+<!-- Después tus scripts personalizados que usan Bootstrap -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script th:inline="javascript">
@@ -127,12 +138,8 @@
 
     function abrirModalEliminar(idEmpresa) {
         empresaAEliminar = idEmpresa;
-        document.getElementById('modalConfirmarEliminar').style.display = 'flex';
-    }
-
-    function cerrarModal() {
-        empresaAEliminar = null;
-        document.getElementById('modalConfirmarEliminar').style.display = 'none';
+        const modal = new bootstrap.Modal(document.getElementById('modalConfirmarEliminar'));
+        modal.show();
     }
 
     function confirmarEliminar() {

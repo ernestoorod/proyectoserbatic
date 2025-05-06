@@ -25,18 +25,25 @@
             display: block;
             border-radius: 5px;
         }
+        .volver-btn {
+            display: inline-block;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .volver-btn:hover {
+            opacity: 0.7;
+            transform: translateX(-5px);
+        }
     </style>
 </head>
 <body>
 
 <div class="form-container">
     <div style="margin-bottom: 1rem;">
-        <a onclick="history.back()" 
-           style="text-decoration: none; color: #555; font-size: 1rem; cursor: pointer; transition: color 0.3s, transform 0.3s;"
-           onmouseover="this.style.color='#000'; this.style.transform='translateX(-5px)';"
-           onmouseout="this.style.color='#555'; this.style.transform='translateX(0)';">
-           ← Volver
-        </a>
+        <a onclick="history.back()" class="volver-btn">← Volver</a>
     </div>        
     <h2>Registro de Empresa</h2>
 

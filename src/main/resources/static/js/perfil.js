@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // Limpiar errores anteriores
         document.querySelectorAll(".error").forEach(e => e.textContent = "");
 
-        // Validaciones específicas
         if (nombre.length < 3) {
             document.getElementById("errorNombre").textContent = "El nombre debe tener al menos 3 caracteres.";
             valido = false;
@@ -42,11 +41,11 @@ document.addEventListener("DOMContentLoaded", function () {
             valido = false;
         }
 
-        // Validar nueva contraseña solo si intenta modificarla
         if (nuevaPass !== "" || repetirPass !== "") {
             const regexContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
             if (!regexContrasena.test(nuevaPass)) {
-                document.getElementById("errorNuevaPass").textContent = "Debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.";
+                document.getElementById("errorNuevaPass").textContent =
+                    "Debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.";
                 valido = false;
             }
             if (nuevaPass !== repetirPass) {
@@ -56,105 +55,80 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (!valido) {
-            event.preventDefault(); // 🚫 No enviar formulario si hay errores
+            event.preventDefault(); // 🚫 No enviar si hay errores
         }
     });
 
-    // Comportamiento visual de campos rellenados
-    const campos = document.querySelectorAll("input");
-
-    campos.forEach(campo => {
-        if (campo.value.trim() !== "") {
-            campo.classList.add("relleno");
-        }
+    // Relleno visual
+    document.querySelectorAll("input").forEach(campo => {
+        if (campo.value.trim() !== "") campo.classList.add("relleno");
 
         campo.addEventListener("input", () => {
-            if (campo.value.trim() !== "") {
-                campo.classList.add("relleno");
-            } else {
-                campo.classList.remove("relleno");
-            }
+            campo.classList.toggle("relleno", campo.value.trim() !== "");
         });
     });
 });
 
-// Funciones para manejar los modales de actualización de contraseña
 function mostrarModal() {
-    document.getElementById('modal').style.display = 'flex';
-    document.getElementById('errorMensaje').style.display = 'none';
-    document.getElementById('passActual').value = "";
-    document.getElementById('passActual').focus();
-}
+    document.getElementById('modalTexto1').textContent = "Por favor, introduce tu contraseña actual.";
+    const modal = new bootstrap.Modal(document.getElementById('modal'));
+    modal.show();
 
-function cerrarModal() {
-    document.getElementById('modal').style.display = 'none';
+    document.getElementById('confirmarBtn').onclick = confirmarActualizacion;
 }
 
 function confirmarActualizacion() {
-    const passActual = document.getElementById('passActual').value.trim();
-    const errorMensaje = document.getElementById('errorMensaje');
+    const passActual = document.getElementById('passActual')?.value?.trim();
+    const mensaje = document.getElementById('modalTexto1');
 
-    if (passActual === "") {
-        errorMensaje.textContent = "Debes escribir tu contraseña actual.";
-        errorMensaje.style.display = 'block';
+    if (!passActual) {
+        mensaje.textContent = "Debes escribir tu contraseña actual.";
         return;
     }
 
     fetch('/perfil/verificar-pass', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ passActual: passActual })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passActual })
     })
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
         if (data.correcto) {
             document.getElementById('hiddenPassActual').value = passActual;
-            cerrarModal();
+            bootstrap.Modal.getInstance(document.getElementById('modal')).hide();
             document.getElementById('perfilForm').submit();
         } else {
-            errorMensaje.textContent = "Contraseña incorrecta. Intenta de nuevo.";
-            errorMensaje.style.display = 'block';
+            mensaje.textContent = "Contraseña incorrecta.";
         }
     })
-    .catch(error => {
-        console.error('Error:', error);
-        errorMensaje.textContent = "Error de conexión. Intenta más tarde.";
-        errorMensaje.style.display = 'block';
+    .catch(() => {
+        mensaje.textContent = "Error de conexión. Intenta más tarde.";
     });
 }
 
-function handleKeyPress(event) {
-    if (event.key === "Enter") {
-        confirmarActualizacion();
-    }
-}
-
-// Funciones para manejar los modales de eliminación de cuenta
 function mostrarModalEliminar() {
-    document.getElementById('modalEliminar').style.display = 'flex';
-}
+    document.getElementById('modalTexto2').textContent = "¿Estás seguro que quieres eliminar tu cuenta?";
+    const modal = new bootstrap.Modal(document.getElementById('modalEliminar'));
+    modal.show();
 
-function cerrarModalEliminar() {
-    document.getElementById('modalEliminar').style.display = 'none';
+    document.getElementById('confirmarBtn').onclick = confirmarEliminacion;
 }
 
 function confirmarEliminacion() {
     fetch('/perfil/eliminar', {
         method: 'POST'
     })
-    .then(response => {
-        if (response.redirected) {
-            window.location.href = response.url;
+    .then(res => {
+        if (res.redirected) {
+            window.location.href = res.url;
         } else {
-            alert("Error al eliminar cuenta. Intenta más tarde.");
-            cerrarModalEliminar();
+            alert("No se pudo eliminar.");
+            bootstrap.Modal.getInstance(document.getElementById('modalEliminar')).hide();
         }
     })
-    .catch(error => {
-        console.error('Error:', error);
-        alert("Error de conexión. Intenta más tarde.");
-        cerrarModalEliminar();
+    .catch(() => {
+        alert("Error de red.");
+        bootstrap.Modal.getInstance(document.getElementById('modalEliminar')).hide();
     });
 }
+

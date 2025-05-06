@@ -1,0 +1,17 @@
+<div th:fragment="modal(modalId, titulo, mensajeId, textoCancelar, mostrarConfirmar)">
+  <div class="modal fade" th:id="${modalId}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded shadow">
+        <div class="modal-body text-center">
+          <p th:id="${mensajeId}" class="fs-5 fw-medium mb-4">[Mensaje aquí]</p>
+        </div>
+        <div class="modal-footer justify-content-center border-0">
+          <th:block th:if="${mostrarConfirmar}">
+            <button id="confirmarBtn" class="btn btn-outline-dark px-4">CONFIRMAR</button>
+          </th:block>
+          <button id="modalClose" type="button" class="btn btn-outline-dark px-4" data-bs-dismiss="modal" th:text="${textoCancelar}">CANCELAR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

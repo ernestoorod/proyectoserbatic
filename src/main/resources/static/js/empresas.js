@@ -8,14 +8,19 @@ function handleChatClick(event, isGuest) {
 }
 
 function mostrarModalSesion() {
-    const modal = document.getElementById("modalSesion");
-    modal.classList.remove("hidden");
+    document.getElementById('modalSesionTexto').textContent = "Debes iniciar sesión para continuar.";
+
+    const modal = new bootstrap.Modal(document.getElementById('modalSesion'));
+    modal.show();
 }
+
+
 
 function cerrarModalSesion() {
     const modal = document.getElementById("modalSesion");
     modal.classList.add("hidden");
 }
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const input = document.getElementById("buscador");
